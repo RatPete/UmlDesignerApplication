@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29911.84
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfDiagramDesigner", "WpfDiagramDesigner\WpfDiagramDesigner.csproj", "{0712ACEF-5956-4999-AEA6-CE2FC629D2DF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetaDslx.GraphViz", "MetaDslx.GraphViz\MetaDslx.GraphViz.csproj", "{CEACE47B-4B78-48A9-9F78-D2F45408A043}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UmlExample", "UmlExample\UmlExample.csproj", "{B17F6C09-78E6-44FF-8DE3-C5F915B75480}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0712ACEF-5956-4999-AEA6-CE2FC629D2DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0712ACEF-5956-4999-AEA6-CE2FC629D2DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0712ACEF-5956-4999-AEA6-CE2FC629D2DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0712ACEF-5956-4999-AEA6-CE2FC629D2DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEACE47B-4B78-48A9-9F78-D2F45408A043}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEACE47B-4B78-48A9-9F78-D2F45408A043}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEACE47B-4B78-48A9-9F78-D2F45408A043}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEACE47B-4B78-48A9-9F78-D2F45408A043}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B17F6C09-78E6-44FF-8DE3-C5F915B75480}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B17F6C09-78E6-44FF-8DE3-C5F915B75480}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B17F6C09-78E6-44FF-8DE3-C5F915B75480}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B17F6C09-78E6-44FF-8DE3-C5F915B75480}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {273C9DFE-F599-4F05-BBC6-645D054B6A76}
+	EndGlobalSection
+EndGlobal

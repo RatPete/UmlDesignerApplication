@@ -1,0 +1,24 @@
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\UmlExample\bin\Debug\netcoreapp2.0\UmlExample.deps.json
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\UmlExample\bin\Debug\netcoreapp2.0\UmlExample.runtimeconfig.json
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\UmlExample\bin\Debug\netcoreapp2.0\UmlExample.runtimeconfig.dev.json
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\UmlExample\bin\Debug\netcoreapp2.0\UmlExample.dll
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\UmlExample\bin\Debug\netcoreapp2.0\UmlExample.pdb
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.csprojAssemblyReference.cache
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.AssemblyInfoInputs.cache
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.AssemblyInfo.cs
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.csproj.CoreCompileInputs.cache
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.dll
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.pdb
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.genruntimeconfig.cache
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\UmlExample\bin\Debug\netcoreapp2.0\UmlExample.deps.json
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\UmlExample\bin\Debug\netcoreapp2.0\UmlExample.runtimeconfig.json
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\UmlExample\bin\Debug\netcoreapp2.0\UmlExample.runtimeconfig.dev.json
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\UmlExample\bin\Debug\netcoreapp2.0\UmlExample.dll
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\UmlExample\bin\Debug\netcoreapp2.0\UmlExample.pdb
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.csprojAssemblyReference.cache
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.AssemblyInfoInputs.cache
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.AssemblyInfo.cs
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.csproj.CoreCompileInputs.cache
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.dll
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.pdb
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\UmlExample\obj\Debug\netcoreapp2.0\UmlExample.genruntimeconfig.cache

@@ -1,0 +1,27 @@
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\bin\Debug\netstandard2.0\MetaDslx.GraphViz.deps.json
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\bin\Debug\netstandard2.0\MetaDslx.GraphViz.dll
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\bin\Debug\netstandard2.0\MetaDslx.GraphViz.pdb
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.csprojAssemblyReference.cache
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.AssemblyInfoInputs.cache
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.AssemblyInfo.cs
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.csproj.CoreCompileInputs.cache
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.dll
+C:\Users\Perger Péter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.pdb
+C:\Users\pergerpeter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\bin\Debug\netstandard2.0\MetaDslx.GraphViz.deps.json
+C:\Users\pergerpeter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\bin\Debug\netstandard2.0\MetaDslx.GraphViz.dll
+C:\Users\pergerpeter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\bin\Debug\netstandard2.0\MetaDslx.GraphViz.pdb
+C:\Users\pergerpeter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.csprojAssemblyReference.cache
+C:\Users\pergerpeter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.AssemblyInfoInputs.cache
+C:\Users\pergerpeter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.AssemblyInfo.cs
+C:\Users\pergerpeter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.csproj.CoreCompileInputs.cache
+C:\Users\pergerpeter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.dll
+C:\Users\pergerpeter\Desktop\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.pdb
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\bin\Debug\netstandard2.0\MetaDslx.GraphViz.deps.json
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\bin\Debug\netstandard2.0\MetaDslx.GraphViz.dll
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\bin\Debug\netstandard2.0\MetaDslx.GraphViz.pdb
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.csprojAssemblyReference.cache
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.AssemblyInfoInputs.cache
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.AssemblyInfo.cs
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.csproj.CoreCompileInputs.cache
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.dll
+C:\Users\pergerpeter\Desktop\MSCönlab\UML Designer\WpfDiagramDesigner\MetaDslx.GraphViz\obj\Debug\netstandard2.0\MetaDslx.GraphViz.pdb
