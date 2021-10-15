@@ -90,7 +90,7 @@ namespace WpfDiagramDesigner.UMLReader
                     maxLength = maxLength < elementText.Length ? elementText.Length : maxLength;
                 }
 
-                int preferedSize = cls.OwnedOperation.Count + cls.OwnedAttribute.Count+1;
+                int preferedSize = cls.OwnedOperation.Count + cls.OwnedAttribute.Count + 1;
                 Size oneElementSize = FormatedTextSize(longest);
                 oneElementSize.Width += 10;
                 oneElementSize.Height *= preferedSize;
@@ -272,7 +272,7 @@ namespace WpfDiagramDesigner.UMLReader
             if (parts[1].ToLower() == "uml")
             {
                 var umlSerializer = new WhiteStarUmlSerializer();
-                var model = umlSerializer.ReadModelFromFile(inputURL);//.ToMutable();
+                model = umlSerializer.ReadModelFromFile(inputURL).ToMutable();
             }
             else
             {

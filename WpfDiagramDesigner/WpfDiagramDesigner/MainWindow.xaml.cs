@@ -38,6 +38,7 @@ namespace WpfDiagramDesigner
         private void Open_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "UML file (*.uml)|*.uml|XMI file (*.xmi)|*.xmi";
             if (openFileDialog.ShowDialog() == true)
             {
                 viewModel = new MainViewModel(canvas);
@@ -49,6 +50,7 @@ namespace WpfDiagramDesigner
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "XMI file (*.xmi)|*.xmi";
             if (saveFileDialog.ShowDialog() == true)
                 UMLReader.UmlReader.WriteOut(saveFileDialog.FileName);
         }
