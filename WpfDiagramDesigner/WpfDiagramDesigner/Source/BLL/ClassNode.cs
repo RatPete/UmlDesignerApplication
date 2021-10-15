@@ -19,6 +19,26 @@ namespace WpfDiagramDesigner.Objects
 
         protected override void GenerateText()
         {
+            var menuItem = new MenuItem
+            {
+                Header = "Add Attribute"
+            };
+            menuItem.Click += (e, er) =>
+            {
+                ((ClassBuilder)node.NodeObject).OwnedAttribute.Add(UMLReader.UmlReader.CreateAttribute());
+                model.Refresh();
+            };
+            Name.ContextMenu.Items.Add(menuItem);
+            menuItem = new MenuItem
+            {
+                Header = "Add Function"
+            };
+            menuItem.Click += (e, er) =>
+            {
+                ((ClassBuilder)node.NodeObject).OwnedOperation.Add(UMLReader.UmlReader.CreateFuntion());
+                model.Refresh();
+            };
+            Name.ContextMenu.Items.Add(menuItem);
 
             foreach (var item in ((ClassBuilder)node.NodeObject).OwnedAttribute)
             {

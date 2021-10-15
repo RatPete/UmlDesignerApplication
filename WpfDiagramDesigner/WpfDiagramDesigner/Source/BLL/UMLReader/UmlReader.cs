@@ -54,6 +54,26 @@ namespace WpfDiagramDesigner.UMLReader
             }
             return elementText;
         }
+
+        public static void CreateClass()
+        {
+           var newClass= UmlFactory.Class();
+            newClass.Name = "temp";
+        }
+
+        public static void CreateEnum()
+        {
+            var newEnum=UmlFactory.Enumeration();
+            newEnum.Name = "temp";
+        }
+
+        public static void CreateInterface()
+        {
+            
+            var inter=UmlFactory.Interface();
+            inter.Name = "temp";
+        }
+
         public static string CreateAttributeText(PropertyBuilder item)
         {
             string elementText = "";
@@ -71,10 +91,10 @@ namespace WpfDiagramDesigner.UMLReader
         public static GraphLayout RefreshLayout()
         {
             var g = new GraphLayout("dot");
-            foreach (var cls in res.OwnedElement.OfType<ClassBuilder>())
+            foreach (var cls in model.Objects.OfType<ClassBuilder>())
             {
                 var temp = g.AddNode(cls);
-                string longest = cls.Name;
+                string longest = cls.Name==null? "temp":cls.Name;
                 int maxLength = longest.Length;
                 foreach (var att in cls.OwnedAttribute)
                 {
@@ -109,11 +129,11 @@ namespace WpfDiagramDesigner.UMLReader
                 Point2D prefSize = new Point2D(oneElementSize.Width, oneElementSize.Height);
                 temp.PreferredSize = prefSize;
             }
-            foreach (var en in res.OwnedElement.OfType<EnumerationBuilder>())
+            foreach (var en in model.Objects.OfType<EnumerationBuilder>())
             {
                 var temp = g.AddNode(en);
-                string longest = en.Name;
-                int maxLength = en.Name.Length;
+                string longest = en.Name == null ? "temp" : en.Name;
+                int maxLength = longest.Length;
 
                 foreach (var att in en.OwnedLiteral)
                 {
@@ -139,12 +159,12 @@ namespace WpfDiagramDesigner.UMLReader
                 Point2D prefSize = new Point2D(oneElementSize.Width, oneElementSize.Height);
                 temp.PreferredSize = prefSize;
             }
-            foreach (var intf in res.OwnedElement.OfType<InterfaceBuilder>())
+            foreach (var intf in model.Objects.OfType<InterfaceBuilder>())
             {
 
                 var temp = g.AddNode(intf);
-                var longest = intf.Name;
-                int maxLength = intf.Name.Length;
+                string longest = intf.Name == null ? "temp" : intf.Name;
+                int maxLength = longest.Length;
                 foreach (var item in intf.OwnedOperation)
                 {
                     string elementText = CreateFunctionText(item);
@@ -176,7 +196,7 @@ namespace WpfDiagramDesigner.UMLReader
                 var first = ir.Client.FirstOrDefault().MName;
                 var second = ir.Supplier.FirstOrDefault().MName;
                 var resFirst = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == first).FirstOrDefault().NodeObject;
-                var resSecond = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second).FirstOrDefault().NodeObject;
+                var resSecond = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second).FirstOrDefault()?.NodeObject;
                 g.AddEdge(resFirst, resSecond, ir);
             }
             foreach (var gen in model.Objects.OfType<GeneralizationBuilder>())
@@ -312,7 +332,7 @@ namespace WpfDiagramDesigner.UMLReader
             if (name.ToLower() == "void" || name == "" || name == null) return null;
             var type = UmlFactory.Class();
             type.Name = name;
-            res.PackagedElement.Add(type);
+            
 
 
             return type;
