@@ -58,20 +58,20 @@ namespace WpfDiagramDesigner.UMLReader
         public static void CreateClass()
         {
            var newClass= UmlFactory.Class();
-            newClass.Name = "temp";
+            newClass.Name = "NewClass";
         }
 
         public static void CreateEnum()
         {
             var newEnum=UmlFactory.Enumeration();
-            newEnum.Name = "temp";
+            newEnum.Name = "NewEnum";
         }
 
         public static void CreateInterface()
         {
             
             var inter=UmlFactory.Interface();
-            inter.Name = "temp";
+            inter.Name = "NewInterface";
         }
 
         public static string CreateAttributeText(PropertyBuilder item)
@@ -240,13 +240,15 @@ namespace WpfDiagramDesigner.UMLReader
         }
         private static Size FormatedTextSize(string longest)
         {
-            TextBox tb = new TextBox();
-            tb.Foreground = Brushes.Black;
-            tb.FontSize = 8.0;
-            tb.Padding = new System.Windows.Thickness(0);
-            tb.Background = Brushes.Transparent;
-            tb.BorderBrush = Brushes.Transparent;
-            tb.BorderThickness = new System.Windows.Thickness(0);
+            TextBox tb = new TextBox
+            {
+                Foreground = Brushes.Black,
+                FontSize = 8.0,
+                Padding = new System.Windows.Thickness(0),
+                Background = Brushes.Transparent,
+                BorderBrush = Brushes.Transparent,
+                BorderThickness = new System.Windows.Thickness(0)
+            };
             var formattedText = new FormattedText(
                 longest,
                 CultureInfo.CurrentCulture,
@@ -292,7 +294,7 @@ namespace WpfDiagramDesigner.UMLReader
             if (parts[1].ToLower() == "uml")
             {
                 var umlSerializer = new WhiteStarUmlSerializer();
-                model = umlSerializer.ReadModelFromFile(inputURL).ToMutable();
+                model = umlSerializer.ReadModelFromFile(inputURL,out var diagnostics).ToMutable();
             }
             else
             {
