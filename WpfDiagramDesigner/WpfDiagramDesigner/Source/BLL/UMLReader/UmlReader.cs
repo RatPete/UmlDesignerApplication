@@ -73,6 +73,18 @@ namespace WpfDiagramDesigner.UMLReader
             var inter=UmlFactory.Interface();
             inter.Name = "NewInterface";
         }
+        public static void CreateDependency(NamedElementBuilder client,NamedElementBuilder supplier)
+        {
+            var dep = UmlFactory.Dependency();
+            dep.Client.Add(client);
+            dep.Supplier.Add(supplier);
+        }
+        public static void CreateInheritance(NamedElementBuilder client, NamedElementBuilder supplier)
+        {
+            var intf = UmlFactory.InterfaceRealization();
+            intf.Client.Add(client);
+            intf.Supplier.Add(supplier);
+        }
 
         public static string CreateAttributeText(PropertyBuilder item)
         {
@@ -93,6 +105,8 @@ namespace WpfDiagramDesigner.UMLReader
             var g = new GraphLayout("dot");
             foreach (var cls in model.Objects.OfType<ClassBuilder>())
             {
+                if (cls.Name == null)
+                    continue;
                 var temp = g.AddNode(cls);
                 string longest = cls.Name==null? "temp":cls.Name;
                 int maxLength = longest.Length;
@@ -131,6 +145,8 @@ namespace WpfDiagramDesigner.UMLReader
             }
             foreach (var en in model.Objects.OfType<EnumerationBuilder>())
             {
+                if (en.Name == null)
+                    continue;
                 var temp = g.AddNode(en);
                 string longest = en.Name == null ? "temp" : en.Name;
                 int maxLength = longest.Length;
@@ -161,7 +177,8 @@ namespace WpfDiagramDesigner.UMLReader
             }
             foreach (var intf in model.Objects.OfType<InterfaceBuilder>())
             {
-
+                if (intf.Name == null)
+                    continue;
                 var temp = g.AddNode(intf);
                 string longest = intf.Name == null ? "temp" : intf.Name;
                 int maxLength = longest.Length;
@@ -282,6 +299,16 @@ namespace WpfDiagramDesigner.UMLReader
             {
                 model.RemoveObject(item);
             }
+            var allAtt = model.Objects.OfType<PropertyBuilder>().Where(i => i.Type == el || i.Class == el);
+            foreach (var item in allAtt)
+            {
+                model.RemoveObject(item);
+            }
+            var allParams = model.Objects.OfType<ParameterBuilder>().Where(i => i.Type == el );
+            foreach (var item in allParams)
+            {
+                model.RemoveObject(item);
+            }
             model.RemoveObject(el);
         }
 
@@ -310,6 +337,7 @@ namespace WpfDiagramDesigner.UMLReader
         public static void WriteOut(string output)
         {
             var xmiSerializer = new UmlXmiSerializer();
+            if(model!=null)
             xmiSerializer.WriteModelToFile(output, model);
         }
         public static TypeBuilder FindClassByName(string name)

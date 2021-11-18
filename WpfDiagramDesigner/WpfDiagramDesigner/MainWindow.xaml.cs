@@ -43,7 +43,7 @@ namespace WpfDiagramDesigner
             {
                 viewModel = new MainViewModel(canvas);
                 viewModel.InitDiagram(openFileDialog.FileName);
-                viewModel.DrawAll();
+                viewModel.InitAll();
             }
                 
         }

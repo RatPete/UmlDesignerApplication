@@ -35,12 +35,11 @@ namespace WpfDiagramDesigner.Objects
             }
         }
         protected abstract Path CreateHead(Point e,Point d );
-        public virtual void Draw(Canvas canvas)
+        public virtual void InitCanvasPosition(Canvas canvas)
         {
             var visual = new DrawingVisual();
             visual.RenderOpen();
             var path = new PathGeometry();
-            var pathGeo = new PathGeometry();
             for (int j = 0; j < GraphicData.SplinePoints.Length; j++)
             {
                 var spline = GraphicData.SplinePoints[j];
@@ -89,16 +88,23 @@ namespace WpfDiagramDesigner.Objects
                 path.Figures.Add(pathFigure);
 
             }
-            var pathLine = new Path();
-            pathLine.StrokeDashArray = new DoubleCollection() { 6, 1 };
-            pathLine.Data = path;
-            pathLine.Stroke = Brushes.Black;
+            var pathLine = new Path
+            {
+                StrokeDashArray = new DoubleCollection() { 6, 1 },
+                Data = path,
+                Stroke = Brushes.Black
+            };
             SetLineStyle(pathLine);
             canvas.Children.Add(pathLine);
         }
         protected virtual void SetLineStyle(Path pathLine)
         {
             pathLine.Stroke = Brushes.Black;
+        }
+
+        public void AnimateElementOnCanvas(Point endPoint)
+        {
+            throw new NotImplementedException();
         }
     }
 }
