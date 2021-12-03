@@ -7,7 +7,6 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using WpfDiagramDesigner.ViewModel;
 using WpfDiagramDesigner.Views;
@@ -18,30 +17,26 @@ namespace WpfDiagramDesigner.Objects
     {
 
         protected NodeLayout node;
-        public String NodeName { get; protected set; }
         protected readonly ViewModel.IRefreshable model;
-        public System.Windows.Point Position { get; private set; }
-        private Border ObjectBorder { set; get; }
+
         protected List<TextBox> Attributes { set; get; } = new List<TextBox>();
         protected List<TextBox> Functions { get; set; } = new List<TextBox>();
         protected TextBox Name { get; set; }
         protected List<TextBox> Enumerations { get; set; } = new List<TextBox>();
         public Node(NodeLayout node, ViewModel.IRefreshable model)
         {
-            NodeName = ((NamedElementBuilder)node.NodeObject).Name;
-            Position = new System.Windows.Point(node.Position.X - node.Width / 2, node.Position.Y - node.Height / 2);
             this.node = node;
             this.model = model;
         }
 
-        public virtual void InitCanvasPosition(Canvas canvas)
+        public virtual void Draw(Canvas canvas)
         {
             GenerateCommon();
-            ObjectBorder = new Border();
+            Border border = new Border();
             StackPanel panel = new StackPanel();
-            ObjectBorder.Child = panel;
-            ObjectBorder.BorderBrush = Brushes.DarkRed;
-            ObjectBorder.BorderThickness = new Thickness(2);
+            border.Child = panel;
+            border.BorderBrush = Brushes.DarkRed;
+            border.BorderThickness = new Thickness(2);
             panel.Children.Add(Name);
             panel.Children.Add(new Line() { Stroke = Brushes.DarkRed, StrokeThickness = 2, X1 = 0, X2 = node.Width - 3 });
             foreach (var element in Attributes)
@@ -53,10 +48,9 @@ namespace WpfDiagramDesigner.Objects
             foreach (var element in Enumerations)
                 panel.Children.Add(element);
             panel.Background = Brushes.LightYellow;
-            
-            Canvas.SetLeft(ObjectBorder, node.Position.X - node.Width / 2);
-            Canvas.SetTop(ObjectBorder, node.Position.Y - node.Height / 2);
-            canvas.Children.Add(ObjectBorder);
+            Canvas.SetLeft(border, node.Position.X - node.Width / 2);
+            Canvas.SetTop(border, node.Position.Y - node.Height / 2);
+            canvas.Children.Add(border);
         }
         protected abstract void GenerateText();
         private void GenerateCommon()
@@ -73,7 +67,7 @@ namespace WpfDiagramDesigner.Objects
             Name.ContextMenu.Items.Clear();
             var menuitem = new MenuItem();
             menuitem.Header = "Remove";
-            menuitem.Click += (e, er) => { model.RemoveElement((ElementBuilder)node.NodeObject); model.Refresh();  };
+            menuitem.Click += (e, er) => { model.RemoveElement((ElementBuilder)node.NodeObject); model.Refresh(); };
             Name.ContextMenu.Items.Add(menuitem);
             GenerateText();
         }
@@ -90,21 +84,6 @@ namespace WpfDiagramDesigner.Objects
 
 
 
-        }
-
-        public void AnimateElementOnCanvas(System.Windows.Point endPoint)
-        {
-            DoubleAnimation animX = new DoubleAnimation();
-            animX.From = Position.X;
-            animX.To = endPoint.X;
-            animX.Duration = new System.Windows.Duration(new TimeSpan(0,0,1));
-            DoubleAnimation animY = new DoubleAnimation();
-            animY.From = Position.Y;
-            animY.To = endPoint.Y;
-            animY.Duration = new System.Windows.Duration(new TimeSpan(0, 0, 1));
-            ObjectBorder.BeginAnimation(Canvas.TopProperty, animY);
-            ObjectBorder.BeginAnimation(Canvas.LeftProperty, animX);
-            return;
         }
     }
 }
