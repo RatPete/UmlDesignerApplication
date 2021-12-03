@@ -50,26 +50,26 @@ namespace WpfDiagramDesigner.ViewModel
             canvas.ContextMenu.Items.Add(menuitem);
 
         }
-
+        List<Objects.Node> Nodes { get; set; } = new List<Objects.Node>();
+        List<Objects.Edge> Edges { get; set; } = new List<Objects.Edge>();
         List<DiagramElement> Elements { get; set; } = new List<DiagramElement>();
         public void InitDiagram(string inputstr)
         { 
             var g = UmlReader.LayoutReader(inputstr);
-            Elements.Clear();
             canvas.Children.Clear();
             foreach (NodeLayout node in g.Nodes)
             {
                 if (node.NodeObject is ClassBuilder)
                 {
-                    Elements.Add(new WpfDiagramDesigner.Objects.ClassNode(node,this));
+                    Nodes.Add(new WpfDiagramDesigner.Objects.ClassNode(node,this));
                 }
                 else if (node.NodeObject is InterfaceBuilder)
                 {
-                    Elements.Add(new WpfDiagramDesigner.Objects.InterfaceNode(node,this));
+                    Nodes.Add(new WpfDiagramDesigner.Objects.InterfaceNode(node,this));
                 }
                 else if (node.NodeObject is EnumerationBuilder)
                 {
-                    Elements.Add(new WpfDiagramDesigner.Objects.EnumNode(node,this));
+                    Nodes.Add(new WpfDiagramDesigner.Objects.EnumNode(node,this));
                 }
             }
             foreach (EdgeLayout edge in g.AllEdges)
@@ -77,19 +77,19 @@ namespace WpfDiagramDesigner.ViewModel
 
                 if (edge.EdgeObject is DependencyBuilder && !(edge.EdgeObject is InterfaceRealizationBuilder))
                 {
-                    Elements.Add(new DependencyEdge(edge));
+                    Edges.Add(new DependencyEdge(edge));
                 }
                 else if (edge.EdgeObject is InterfaceRealizationBuilder)
                 {
-                    Elements.Add(new InterfaceEdge(edge));
+                    Edges.Add(new InterfaceEdge(edge));
                 }
                 else if (edge.EdgeObject is GeneralizationBuilder)
                 {
-                    Elements.Add(new GeneralizationEdge(edge));
+                    Edges.Add(new GeneralizationEdge(edge));
                 }
                 else if (edge.EdgeObject is AssociationBuilder)
                 {
-                    Elements.Add(new AssociationEdge(edge));
+                    Edges.Add(new AssociationEdge(edge));
                 }
                 canvas.Width = g.Width;
                 canvas.Height = g.Height;
@@ -97,38 +97,44 @@ namespace WpfDiagramDesigner.ViewModel
             }
             
         }
-        public void DrawAll()
+        public void InitAll()
         {
 
-            foreach (var element in Elements)
+            foreach (var element in Nodes)
             {
-                element.Draw(canvas);
+                element.InitCanvasPosition(canvas);
+            }
+            foreach (var element in Edges)
+            {
+                element.InitCanvasPosition(canvas);
             }
         }
         public void Refresh()
         {
             RefreshDiagram();
-            DrawAll();
         }
+
 
         private void RefreshDiagram()
         {
             var g = UmlReader.RefreshLayout();
-            Elements.Clear();
-            canvas.Children.Clear();
+            this.Elements.Clear();
+            //canvas.Children.Clear();
+            var Edges = new List<Edge>();
+            var Nodes = new List<Objects.Node>();
             foreach (NodeLayout node in g.Nodes)
             {
                 if (node.NodeObject is ClassBuilder)
                 {
-                    Elements.Add(new WpfDiagramDesigner.Objects.ClassNode(node, this));
+                    Nodes.Add(new WpfDiagramDesigner.Objects.ClassNode(node, this));
                 }
                 else if (node.NodeObject is InterfaceBuilder)
                 {
-                    Elements.Add(new WpfDiagramDesigner.Objects.InterfaceNode(node, this));
+                    Nodes.Add(new WpfDiagramDesigner.Objects.InterfaceNode(node, this));
                 }
                 else if (node.NodeObject is EnumerationBuilder)
                 {
-                    Elements.Add(new WpfDiagramDesigner.Objects.EnumNode(node, this));
+                    Nodes.Add(new WpfDiagramDesigner.Objects.EnumNode(node, this));
                 }
             }
             foreach (EdgeLayout edge in g.AllEdges)
@@ -136,25 +142,44 @@ namespace WpfDiagramDesigner.ViewModel
 
                 if (edge.EdgeObject is DependencyBuilder && !(edge.EdgeObject is InterfaceRealizationBuilder))
                 {
-                    Elements.Add(new DependencyEdge(edge));
+                    Edges.Add(new DependencyEdge(edge));
                 }
                 else if (edge.EdgeObject is InterfaceRealizationBuilder)
                 {
-                    Elements.Add(new InterfaceEdge(edge));
+                    Edges.Add(new InterfaceEdge(edge));
                 }
                 else if (edge.EdgeObject is GeneralizationBuilder)
                 {
-                    Elements.Add(new GeneralizationEdge(edge));
+                    Edges.Add(new GeneralizationEdge(edge));
                 }
                 else if (edge.EdgeObject is AssociationBuilder)
                 {
-                    Elements.Add(new AssociationEdge(edge));
+                    Edges.Add(new AssociationEdge(edge));
                 }
-                canvas.Width = g.Width;
-                canvas.Height = g.Height;
-
             }
+            canvas.Width = g.Width;
+            canvas.Height = g.Height;
+            AnimateAll(Edges,Nodes);
 
+        }
+
+        private void AnimateAll(List<Edge> edges,List<Objects.Node> nodes)
+        {
+            foreach (var item in nodes)
+            {
+                var animatedNode=Nodes.Find((j) =>
+                {
+                    return j.NodeName == item.NodeName;
+                });
+                if (animatedNode == null)
+                {
+                    item.InitCanvasPosition(canvas);
+                }
+                else
+                {
+                    animatedNode.AnimateElementOnCanvas(item.Position);
+                }
+            }
         }
 
         public void RemoveElement(ElementBuilder el)

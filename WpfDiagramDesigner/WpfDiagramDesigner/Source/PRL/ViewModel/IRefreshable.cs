@@ -5,6 +5,6 @@ namespace WpfDiagramDesigner.ViewModel
     public interface IRefreshable
     {
         public void Refresh();
-        public void RemoveElement(ElementBuilder el);
+        public void RemoveNode(ElementBuilder el);
     }
 }

@@ -7,6 +7,7 @@ namespace WpfDiagramDesigner.Objects
 {
     interface DiagramElement
     {
-        void Draw(Canvas canvas);
+        void InitCanvasPosition(Canvas canvas);
+        void AnimateElementOnCanvas(System.Windows.Point endPoint);
     }
 }
