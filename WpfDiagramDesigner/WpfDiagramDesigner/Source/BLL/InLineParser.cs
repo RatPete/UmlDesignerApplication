@@ -41,7 +41,7 @@ namespace WpfDiagramDesigner
                 item.Visibility = vis;
                 return false;
             }
-            if (UMLReader.UmlReader.FindClassByName(returnType.Trim()) != null||returnType.Trim().ToLower()!="void")
+            if (UMLReader.UmlReader.FindClassByName(returnType.Trim()) != null)
             {
                 var parameter = UMLReader.UmlReader.UmlFactory.Parameter();
                 parameter.Direction = ParameterDirectionKind.Return;
