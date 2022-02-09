@@ -54,6 +54,26 @@ namespace WpfDiagramDesigner.UMLReader
             }
             return elementText;
         }
+
+        public static void CreateClass()
+        {
+           var newClass= UmlFactory.Class();
+            newClass.Name = "NewClass";
+        }
+
+        public static void CreateEnum()
+        {
+            var newEnum=UmlFactory.Enumeration();
+            newEnum.Name = "NewEnum";
+        }
+
+        public static void CreateInterface()
+        {
+            
+            var inter=UmlFactory.Interface();
+            inter.Name = "NewInterface";
+        }
+
         public static string CreateAttributeText(PropertyBuilder item)
         {
             string elementText = "";
@@ -71,10 +91,10 @@ namespace WpfDiagramDesigner.UMLReader
         public static GraphLayout RefreshLayout()
         {
             var g = new GraphLayout("dot");
-            foreach (var cls in res.OwnedElement.OfType<ClassBuilder>())
+            foreach (var cls in model.Objects.OfType<ClassBuilder>())
             {
                 var temp = g.AddNode(cls);
-                string longest = cls.Name;
+                string longest = cls.Name==null? "temp":cls.Name;
                 int maxLength = longest.Length;
                 foreach (var att in cls.OwnedAttribute)
                 {
@@ -90,7 +110,7 @@ namespace WpfDiagramDesigner.UMLReader
                     maxLength = maxLength < elementText.Length ? elementText.Length : maxLength;
                 }
 
-                int preferedSize = cls.OwnedOperation.Count + cls.OwnedAttribute.Count+1;
+                int preferedSize = cls.OwnedOperation.Count + cls.OwnedAttribute.Count + 1;
                 Size oneElementSize = FormatedTextSize(longest);
                 oneElementSize.Width += 10;
                 oneElementSize.Height *= preferedSize;
@@ -109,11 +129,11 @@ namespace WpfDiagramDesigner.UMLReader
                 Point2D prefSize = new Point2D(oneElementSize.Width, oneElementSize.Height);
                 temp.PreferredSize = prefSize;
             }
-            foreach (var en in res.OwnedElement.OfType<EnumerationBuilder>())
+            foreach (var en in model.Objects.OfType<EnumerationBuilder>())
             {
                 var temp = g.AddNode(en);
-                string longest = en.Name;
-                int maxLength = en.Name.Length;
+                string longest = en.Name == null ? "temp" : en.Name;
+                int maxLength = longest.Length;
 
                 foreach (var att in en.OwnedLiteral)
                 {
@@ -139,12 +159,12 @@ namespace WpfDiagramDesigner.UMLReader
                 Point2D prefSize = new Point2D(oneElementSize.Width, oneElementSize.Height);
                 temp.PreferredSize = prefSize;
             }
-            foreach (var intf in res.OwnedElement.OfType<InterfaceBuilder>())
+            foreach (var intf in model.Objects.OfType<InterfaceBuilder>())
             {
 
                 var temp = g.AddNode(intf);
-                var longest = intf.Name;
-                int maxLength = intf.Name.Length;
+                string longest = intf.Name == null ? "temp" : intf.Name;
+                int maxLength = longest.Length;
                 foreach (var item in intf.OwnedOperation)
                 {
                     string elementText = CreateFunctionText(item);
@@ -176,7 +196,7 @@ namespace WpfDiagramDesigner.UMLReader
                 var first = ir.Client.FirstOrDefault().MName;
                 var second = ir.Supplier.FirstOrDefault().MName;
                 var resFirst = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == first).FirstOrDefault().NodeObject;
-                var resSecond = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second).FirstOrDefault().NodeObject;
+                var resSecond = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second).FirstOrDefault()?.NodeObject;
                 g.AddEdge(resFirst, resSecond, ir);
             }
             foreach (var gen in model.Objects.OfType<GeneralizationBuilder>())
@@ -220,13 +240,15 @@ namespace WpfDiagramDesigner.UMLReader
         }
         private static Size FormatedTextSize(string longest)
         {
-            TextBox tb = new TextBox();
-            tb.Foreground = Brushes.Black;
-            tb.FontSize = 8.0;
-            tb.Padding = new System.Windows.Thickness(0);
-            tb.Background = Brushes.Transparent;
-            tb.BorderBrush = Brushes.Transparent;
-            tb.BorderThickness = new System.Windows.Thickness(0);
+            TextBox tb = new TextBox
+            {
+                Foreground = Brushes.Black,
+                FontSize = 8.0,
+                Padding = new System.Windows.Thickness(0),
+                Background = Brushes.Transparent,
+                BorderBrush = Brushes.Transparent,
+                BorderThickness = new System.Windows.Thickness(0)
+            };
             var formattedText = new FormattedText(
                 longest,
                 CultureInfo.CurrentCulture,
@@ -272,7 +294,7 @@ namespace WpfDiagramDesigner.UMLReader
             if (parts[1].ToLower() == "uml")
             {
                 var umlSerializer = new WhiteStarUmlSerializer();
-                var model = umlSerializer.ReadModelFromFile(inputURL);//.ToMutable();
+                model = umlSerializer.ReadModelFromFile(inputURL,out var diagnostics).ToMutable();
             }
             else
             {
@@ -312,7 +334,7 @@ namespace WpfDiagramDesigner.UMLReader
             if (name.ToLower() == "void" || name == "" || name == null) return null;
             var type = UmlFactory.Class();
             type.Name = name;
-            res.PackagedElement.Add(type);
+            
 
 
             return type;

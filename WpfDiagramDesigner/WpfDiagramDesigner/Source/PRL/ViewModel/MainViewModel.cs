@@ -22,10 +22,30 @@ namespace WpfDiagramDesigner.ViewModel
             {
                 Header = "AddClass"
             };
+            menuitem.Click += (e, er) =>
+            {
+                UMLReader.UmlReader.CreateClass();
+                Refresh();
+            };
             canvas.ContextMenu.Items.Add(menuitem);
             menuitem = new MenuItem
             {
                 Header = "AddEnum"
+            };
+            menuitem.Click += (e, er) =>
+            {
+                UMLReader.UmlReader.CreateEnum();
+                Refresh();
+            };
+            canvas.ContextMenu.Items.Add(menuitem);
+            menuitem = new MenuItem
+            {
+                Header = "AddInterface"
+            };
+            menuitem.Click += (e, er) =>
+            {
+                UMLReader.UmlReader.CreateInterface();
+                Refresh();
             };
             canvas.ContextMenu.Items.Add(menuitem);
 
