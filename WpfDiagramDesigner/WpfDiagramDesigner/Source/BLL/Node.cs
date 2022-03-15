@@ -6,8 +6,10 @@ using System.Drawing;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using WpfDiagramDesigner.Source.PRL.Helper;
 using WpfDiagramDesigner.ViewModel;
 using WpfDiagramDesigner.Views;
 
@@ -28,12 +30,44 @@ namespace WpfDiagramDesigner.Objects
             this.node = node;
             this.model = model;
         }
-
+        public void DisableTextBoxes()
+        {
+            foreach (var item in Attributes)
+            {
+                item.IsEnabled = false;
+            }
+            foreach (var item in Functions)
+            {
+                item.IsEnabled = false;
+            }
+            foreach (var item in Enumerations)
+            {
+                item.IsEnabled = false;
+            }
+            Name.IsEnabled = false;
+        }
+        public void EnableTextBoxes()
+        {
+            foreach (var item in Attributes)
+            {
+                item.IsEnabled = true;
+            }
+            foreach (var item in Functions)
+            {
+                item.IsEnabled = true;
+            }
+            foreach (var item in Enumerations)
+            {
+                item.IsEnabled = true;
+            }
+            Name.IsEnabled = true;
+        }
         public virtual void Draw(Canvas canvas)
         {
             GenerateCommon();
             Border border = new Border();
             StackPanel panel = new StackPanel();
+            panel.MouseLeftButtonDown += Border_MouseLeftButtonDown;
             border.Child = panel;
             border.BorderBrush = Brushes.DarkRed;
             border.BorderThickness = new Thickness(2);
@@ -52,6 +86,17 @@ namespace WpfDiagramDesigner.Objects
             Canvas.SetTop(border, node.Position.Y - node.Height / 2);
             canvas.Children.Add(border);
         }
+
+        private void Border_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            
+            RelationshipCreator.NodeClicked(((NamedElementBuilder)node.NodeObject).Name.ToString());
+            var element=e.GetPosition((Panel)sender);
+            model.Refresh();
+
+        }
+
+
         protected abstract void GenerateText();
         private void GenerateCommon()
         {
@@ -65,9 +110,12 @@ namespace WpfDiagramDesigner.Objects
              };
             Name.ContextMenu = new ContextMenu();
             Name.ContextMenu.Items.Clear();
+ 
+           
             var menuitem = new MenuItem();
             menuitem.Header = "Remove";
-            menuitem.Click += (e, er) => { model.RemoveElement((ElementBuilder)node.NodeObject); model.Refresh(); };
+            menuitem.Click += (e, er) => { model.RemoveElement((ElementBuilder)node.NodeObject); model.Refresh(); 
+            };
             Name.ContextMenu.Items.Add(menuitem);
             GenerateText();
         }

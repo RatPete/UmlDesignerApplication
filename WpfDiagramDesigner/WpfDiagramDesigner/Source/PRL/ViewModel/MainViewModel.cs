@@ -50,7 +50,7 @@ namespace WpfDiagramDesigner.ViewModel
             canvas.ContextMenu.Items.Add(menuitem);
 
         }
-
+        private bool isDisabled=false;
         List<DiagramElement> Elements { get; set; } = new List<DiagramElement>();
         public void InitDiagram(string inputstr)
         { 
@@ -105,10 +105,31 @@ namespace WpfDiagramDesigner.ViewModel
                 element.Draw(canvas);
             }
         }
+        public void DisableAll()
+        {
+            isDisabled = true;
+            foreach (var item in Elements)
+            {
+                item.DisableTextBoxes();
+            }
+            
+        }
+        public void EnableAll()
+        {
+            isDisabled = false;
+            foreach (var item in Elements)
+            {
+                item.EnableTextBoxes();
+            }
+        }
         public void Refresh()
         {
             RefreshDiagram();
             DrawAll();
+            if (isDisabled)
+            {
+                DisableAll();
+            }
         }
 
         private void RefreshDiagram()

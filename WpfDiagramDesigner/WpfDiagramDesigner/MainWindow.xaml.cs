@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfDiagramDesigner.Objects;
+using WpfDiagramDesigner.Source.PRL.Helper;
 using WpfDiagramDesigner.UMLReader;
 using WpfDiagramDesigner.ViewModel;
 
@@ -55,5 +56,57 @@ namespace WpfDiagramDesigner
                 UMLReader.UmlReader.WriteOut(saveFileDialog.FileName);
         }
 
+        private void Aggregation_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.AGGREGATION;
+            DisableElements();
+        }
+
+        private void Association_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.ASSOCIATION;
+            DisableElements();
+        }
+
+        private void Composition_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.COMPOSITION;
+            DisableElements();
+        }
+
+        private void Inheritance_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.INHERITANCE;
+            DisableElements();
+        }
+
+        private void Dependency_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.DEPENDENCY;
+            DisableElements();
+        }
+
+        private void Realization_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.REALIZATION;
+            DisableElements();
+        }
+
+        private void DisableElements()
+        {
+            viewModel.DisableAll();
+        }
+
+        private void Normal_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.NORMAL;
+            EnableElements();
+
+        }
+
+        private void EnableElements()
+        {
+            viewModel.EnableAll();
+        }
     }
 }

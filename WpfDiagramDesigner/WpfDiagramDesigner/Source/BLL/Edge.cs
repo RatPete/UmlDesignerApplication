@@ -100,5 +100,15 @@ namespace WpfDiagramDesigner.Objects
         {
             pathLine.Stroke = Brushes.Black;
         }
+
+        public void EnableTextBoxes()
+        {
+            
+        }
+
+        public void DisableTextBoxes()
+        {
+         
+        }
     }
 }

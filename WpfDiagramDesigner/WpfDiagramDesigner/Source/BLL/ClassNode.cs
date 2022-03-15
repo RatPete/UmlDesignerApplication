@@ -43,7 +43,6 @@ namespace WpfDiagramDesigner.Objects
             foreach (var item in ((ClassBuilder)node.NodeObject).OwnedAttribute)
             {
                 var tb = NodeElementBuilder.AttributeBuilder(item, model);
-                
                 Attributes.Add(tb);
                 
             }

@@ -8,5 +8,7 @@ namespace WpfDiagramDesigner.Objects
     interface DiagramElement
     {
         void Draw(Canvas canvas);
+        void EnableTextBoxes();
+        void DisableTextBoxes();
     }
 }
