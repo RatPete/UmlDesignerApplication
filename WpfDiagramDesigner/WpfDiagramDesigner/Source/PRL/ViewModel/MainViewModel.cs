@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using WpfDiagramDesigner.Objects;
+using WpfDiagramDesigner.Source.PRL.Helper;
 using WpfDiagramDesigner.UMLReader;
 
 namespace WpfDiagramDesigner.ViewModel
@@ -235,9 +236,7 @@ namespace WpfDiagramDesigner.ViewModel
                 }
 
                 geometryData.EndPoint = newLastPoint;
-                var temp = HeadBuilder.CreateArrowHead(newLastPoint, lastPoint);
-                head.Data = temp.Data;
-                head.Stroke = temp.Stroke;
+                RelationshipCreator.GenerateArrow(newLastPoint, lastPoint, path, head);
                 
                 
             }

@@ -1,6 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Shapes;
+using WpfDiagramDesigner.Objects;
 
 namespace WpfDiagramDesigner.Source.PRL.Helper
 {
@@ -37,6 +41,19 @@ namespace WpfDiagramDesigner.Source.PRL.Helper
                 }
                 startNode = "";endNode = "";
                 return false;
+            }
+        }
+        public static void GenerateArrow(Point start,Point end,Path body, Path head)
+        {
+            Path temp;
+            switch(currentClickType)
+                {
+                    case ClickType.AGGREGATION: LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateDiamondHead(start, end);head.Data = temp.Data;head.Stroke = temp.Stroke; break;
+                    case ClickType.ASSOCIATION: LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateArrowHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
+                    case ClickType.COMPOSITION: LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateDiamondHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
+                    case ClickType.DEPENDENCY: LineBuilder.DashedLine(body); temp = HeadBuilder.CreateArrowHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
+                    case ClickType.INHERITANCE: LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateTriangleHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
+                    case ClickType.REALIZATION: LineBuilder.DashedLine(body); temp = HeadBuilder.CreateTriangleHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
             }
         }
     }
