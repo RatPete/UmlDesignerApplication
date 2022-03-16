@@ -198,17 +198,17 @@ namespace WpfDiagramDesigner.UMLReader
             {
                 var first = ir.Client.FirstOrDefault()?.MName;
                 var second = ir.Supplier.FirstOrDefault()?.MName;
-                var resFirst = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == first).FirstOrDefault().NodeObject;
-                var resSecond = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second).FirstOrDefault()?.NodeObject;
+                var resFirst = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name?.ToString() == first).FirstOrDefault()?.NodeObject;
+                var resSecond = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name?.ToString() == second).FirstOrDefault()?.NodeObject;
                 g.AddEdge(resFirst, resSecond, ir);
             }
             foreach (var gen in model.Objects.OfType<GeneralizationBuilder>())
             {
                 var first = gen.Specific?.Name;
                 var second = gen.General?.Name;
-                var resFirst = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == first).FirstOrDefault()?.NodeObject;
-                var resSecond = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second).FirstOrDefault()?.NodeObject;
-                if (resFirst != null && resSecond != null && resFirst.Name.ToString() == first && resSecond.Name.ToString() == second)
+                var resFirst = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name?.ToString() == first).FirstOrDefault()?.NodeObject;
+                var resSecond = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name?.ToString() == second).FirstOrDefault()?.NodeObject;
+                if (resFirst != null && resSecond != null && resFirst?.Name.ToString() == first && resSecond?.Name?.ToString() == second)
                     g.AddEdge(resFirst, resSecond, gen);
 
             }
@@ -231,7 +231,7 @@ namespace WpfDiagramDesigner.UMLReader
                 }
                 if (!(g.AllEdges.Any(i => ((NamedElementBuilder)i.Source.NodeObject)?.Name.ToString() == second?.Name && ((NamedElementBuilder)i.Target.NodeObject).Name.ToString() == first?.Name && (i.EdgeObject is DependencyBuilder))))
                     if (!(g.AllEdges.Any(i => ((NamedElementBuilder)i.Source.NodeObject)?.Name.ToString() == second?.Name && ((NamedElementBuilder)i.Target.NodeObject).Name.ToString() == first?.Name && (i.EdgeObject is InterfaceRealizationBuilder))))
-                        g.AddEdge(g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second?.Name).FirstOrDefault().NodeObject, g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name.ToString() == first?.Name).FirstOrDefault().NodeObject, dep);
+                        g.AddEdge(g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name.ToString() == second?.Name).FirstOrDefault().NodeObject, g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name.ToString() == first?.Name).FirstOrDefault().NodeObject, dep);
 
             }
             g.NodeSeparation = 30;
@@ -386,10 +386,19 @@ namespace WpfDiagramDesigner.UMLReader
             var end1 = UmlFactory.Property(); // Kirajzoláskor ez van a cls1 oldalon, de valójában a cls2 hivatkozik rá
             var cls1 = FindClass(startNode);
             var cls2 = FindClass(endNode);
-            if (cls1 == null || cls2 == null)
-            {
-                throw new ClassNotFoundException("Association creation failed");
-            }
+            var any1 = FindClassByName(startNode);
+            var any2 = FindClassByName(endNode);
+            if (cls1 == null)
+                if (any1 != null)
+                    throw new ClassNotFoundException("Node1 not class");
+                else
+                    throw new ClassNotFoundException("Node1 does not exist error");
+            if (cls2 == null)
+                if (any2 != null)
+                    throw new ClassNotFoundException("Node2 not class");
+                else
+                    throw new ClassNotFoundException("Node2 does not exist error");
+
             end1.Type = cls1;
             var end2 = UmlFactory.Property(); // Kirajzoláskor ez van a cls2 oldalon, de valójában a cls1 hivatkozik rá
             end2.Type = cls2;
@@ -423,10 +432,19 @@ namespace WpfDiagramDesigner.UMLReader
         {
             var cls1 = FindClass(startNode);
             var cls2 = FindClass(endNode);
-            if (cls1 == null || cls2 == null)
-            {
-                throw new ClassNotFoundException("Dependency creation not succesfull");
-            }
+            var any1 = FindClassByName(startNode);
+            var any2 = FindClassByName(endNode);
+            if (cls1 == null)
+                if (any1 != null)
+                    throw new ClassNotFoundException("Node1 not class");
+                else
+                    throw new ClassNotFoundException("Node1 does not exist error");
+            if (cls2 == null)
+                if (any2 != null)
+                    throw new ClassNotFoundException("Node2 not class");
+                else
+                    throw new ClassNotFoundException("Node2 does not exist error");
+
             var rel = UmlFactory.Generalization();
             cls1    .Generalization.Add(rel);
             rel.Specific=cls1;
