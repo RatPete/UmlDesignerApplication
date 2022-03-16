@@ -3,6 +3,7 @@ using MetaDslx.Languages.Uml.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -141,7 +142,7 @@ namespace WpfDiagramDesigner.ViewModel
             var element = e.GetPosition(canvas);
             path = new Path();
             path.Stroke = Brushes.Black;
-            path.StrokeThickness = 10;
+            path.StrokeThickness = 2;
             canvas.Children.Add(path);
             path.Data = new LineGeometry { StartPoint = element,EndPoint=element};
             drawingStarted = true;
@@ -150,15 +151,18 @@ namespace WpfDiagramDesigner.ViewModel
         public void EndDrawingLine(System.Windows.Input.MouseButtonEventArgs e)
         {
             path = new Path();
+            head = new Path();
             drawingStarted = false;
         }
         Path path=new Path();
+        Path head = new Path();
         private void RefreshDiagram()
         {
             var g = UmlReader.RefreshLayout();
             Elements.Clear();
             canvas.Children.Clear();
             canvas.Children.Add(path);
+            canvas.Children.Add(head);
             canvas.MouseMove += Canvas_MouseMove;
             foreach (NodeLayout node in g.Nodes)
             {
@@ -205,9 +209,39 @@ namespace WpfDiagramDesigner.ViewModel
         {
             if (drawingStarted)
             {
-                var element = e.GetPosition(canvas);
-                ((LineGeometry)path.Data).EndPoint = element;
+                var geometryData = ((LineGeometry)path.Data);
+                var lastPoint = e.GetPosition(canvas);
+                var newLastPoint = new Point();
+                var startPoint = geometryData.StartPoint;
+                if (lastPoint.Y - startPoint.Y > 0)
+                    newLastPoint.Y = lastPoint.Y - 3;
+                else if (lastPoint.Y - startPoint.Y == 0)
+                {
+                    newLastPoint.Y = lastPoint.Y;
+                }
+                else
+                {
+                    newLastPoint.Y = lastPoint.Y + 3;
+                }
+                if (lastPoint.X - startPoint.X > 0)
+                    newLastPoint.X = lastPoint.X - 3;
+                else if (lastPoint.X - startPoint.X == 0)
+                {
+                    newLastPoint.X = lastPoint.X;
+                }
+                else
+                {
+                    newLastPoint.X = lastPoint.X + 3;
+                }
+
+                geometryData.EndPoint = newLastPoint;
+                var temp = HeadBuilder.CreateArrowHead(newLastPoint, lastPoint);
+                head.Data = temp.Data;
+                head.Stroke = temp.Stroke;
+                
+                
             }
+
             
         }
 
