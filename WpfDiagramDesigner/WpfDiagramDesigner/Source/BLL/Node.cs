@@ -89,10 +89,17 @@ namespace WpfDiagramDesigner.Objects
 
         private void Border_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            
-            RelationshipCreator.NodeClicked(((NamedElementBuilder)node.NodeObject).Name.ToString());
-            var element=e.GetPosition((Panel)sender);
-            model.Refresh();
+
+            if (RelationshipCreator.NodeClicked(((NamedElementBuilder)node.NodeObject).Name.ToString())) { 
+                
+                model.StartDrawingLine(e);
+                model.Refresh();
+            }
+            else
+            {
+                model.EndDrawingLine(e);
+                model.Refresh();
+            }
 
         }
 

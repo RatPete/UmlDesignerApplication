@@ -13,13 +13,14 @@ namespace WpfDiagramDesigner.Source.PRL.Helper
                 {
                     currentClickType = value;startNode = "";endNode = "";
                 } } }
-        public static void NodeClicked(string clickedNode)
+        public static bool NodeClicked(string clickedNode)
         {
             if (currentClickType == ClickType.NORMAL)
-                return;
+                return false;
             if (startNode == "")
             {
                 startNode = clickedNode;
+                return true;
             }
             else
             {
@@ -35,6 +36,7 @@ namespace WpfDiagramDesigner.Source.PRL.Helper
                     case ClickType.REALIZATION: UMLReader.UmlReader.CreateRealization(startNode, endNode);break;
                 }
                 startNode = "";endNode = "";
+                return false;
             }
         }
     }
