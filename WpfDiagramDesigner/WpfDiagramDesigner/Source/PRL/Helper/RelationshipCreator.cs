@@ -29,17 +29,24 @@ namespace WpfDiagramDesigner.Source.PRL.Helper
             else
             {
                 endNode = clickedNode;
-                //TODO switch case with different clickTypes-->UMLReader class creationMethods
-                switch (currentClickType)
+                try
                 {
-                    case ClickType.AGGREGATION: UMLReader.UmlReader.CreateAggregation(startNode, endNode);break;
-                    case ClickType.ASSOCIATION: UMLReader.UmlReader.CreateAssociation(startNode, endNode);break;
-                    case ClickType.COMPOSITION:UMLReader.UmlReader.CreateComposition(startNode, endNode);break;
-                    case ClickType.DEPENDENCY: UMLReader.UmlReader.CreateDependency(startNode, endNode);break;
-                    case ClickType.INHERITANCE: UMLReader.UmlReader.CreateInheritance(startNode, endNode);break;
-                    case ClickType.REALIZATION: UMLReader.UmlReader.CreateRealization(startNode, endNode);break;
+                    //TODO switch case with different clickTypes-->UMLReader class creationMethods
+                    switch (currentClickType)
+                    {
+                        case ClickType.AGGREGATION: UMLReader.UmlReader.CreateAggregation(startNode, endNode); break;
+                        case ClickType.ASSOCIATION: UMLReader.UmlReader.CreateAssociation(startNode, endNode); break;
+                        case ClickType.COMPOSITION: UMLReader.UmlReader.CreateComposition(startNode, endNode); break;
+                        case ClickType.DEPENDENCY: UMLReader.UmlReader.CreateDependency(startNode, endNode); break;
+                        case ClickType.INHERITANCE: UMLReader.UmlReader.CreateInheritance(startNode, endNode); break;
+                        case ClickType.REALIZATION: UMLReader.UmlReader.CreateRealization(startNode, endNode); break;
+                    }
+                    startNode = ""; endNode = "";
                 }
-                startNode = "";endNode = "";
+                catch(ClassNotFoundException exception)
+                {
+                    startNode = "";
+                }
                 return false;
             }
         }

@@ -115,6 +115,10 @@ namespace WpfDiagramDesigner.Objects
             Point middlePoint = new Point((lastPoint.X + endPoint.X) / 2, (lastPoint.Y + endPoint.Y) / 2);
             PathFigure data1 = CreateArrowFigure(middlePoint, lastPoint);
             PathFigure data2 = CreateArrowFigure(middlePoint,endPoint);
+            //data1.IsClosed = true;
+            data1.IsFilled = true;
+            data2.IsFilled = true;
+            //data2.IsClosed = true;
             PathGeometry geo = new PathGeometry();
             geo.Figures.Add(data1);
             geo.Figures.Add(data2);
