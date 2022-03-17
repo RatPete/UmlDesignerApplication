@@ -294,7 +294,12 @@ namespace WpfDiagramDesigner.UMLReader
 
             UmlDescriptor.Initialize();
             string[] parts = inputURL.Split(".");
-
+            if (inputURL == "")
+            {
+                model = new MetaDslx.Modeling.MutableModel();
+                UmlFactory = new UmlFactory(model);
+                return null;
+            }
             if (parts[1].ToLower() == "uml")
             {
                 var umlSerializer = new WhiteStarUmlSerializer();

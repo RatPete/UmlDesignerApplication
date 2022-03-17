@@ -48,6 +48,12 @@ namespace WpfDiagramDesigner
             }
                 
         }
+        private void New_Diagram_Click(object sender,RoutedEventArgs e)
+        {
+            viewModel = new MainViewModel(canvas);
+            viewModel.InitDiagram("");
+            viewModel.DrawAll();
+        }
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();

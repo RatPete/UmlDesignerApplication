@@ -35,6 +35,7 @@
                               Header="Home">
                 <RibbonGroup x:Name="Group1" 
                                     Header="Group1">
+                    <RibbonButton x:Name="New_Diagram" SmallImageSource="/ic_folder_open_black_24dp.png" Label="New Diagram" Click="New_Diagram_Click"></RibbonButton>
                     <RibbonButton x:Name="Button1"
                                          Label="Save Button" SmallImageSource="/ic_folder_open_black_24dp.png" Click="Save_Click"/>
                     <RibbonButton x:Name="Button2"
@@ -71,7 +72,7 @@
             </RibbonTab>
         </Ribbon>
         <ScrollViewer Grid.Row="1" x:Name="viewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <Canvas x:Name="canvas" Background="Transparent" ></Canvas>
+            <Canvas x:Name="canvas" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ></Canvas>
         </ScrollViewer>
     </Grid>
 </Window>

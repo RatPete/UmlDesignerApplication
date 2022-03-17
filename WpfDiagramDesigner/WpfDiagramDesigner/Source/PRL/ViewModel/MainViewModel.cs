@@ -53,7 +53,12 @@ namespace WpfDiagramDesigner.ViewModel
         private bool isDisabled=false;
         List<DiagramElement> Elements { get; set; } = new List<DiagramElement>();
         public void InitDiagram(string inputstr)
-        { 
+        {
+            if (inputstr == "")
+            {
+                UmlReader.LayoutReader(inputstr);
+                return;
+            }
             var g = UmlReader.LayoutReader(inputstr);
             Elements.Clear();
             canvas.Children.Clear();
