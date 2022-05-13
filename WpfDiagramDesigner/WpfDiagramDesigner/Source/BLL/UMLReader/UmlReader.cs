@@ -17,7 +17,6 @@ namespace WpfDiagramDesigner.UMLReader
     public static class UmlReader
     {
         private static MetaDslx.Modeling.MutableModel model;
-        static PackageBuilder res;
         public static string CreateFunctionText(OperationBuilder item)
         {
             string elementText = "";
@@ -96,6 +95,8 @@ namespace WpfDiagramDesigner.UMLReader
             var g = new GraphLayout("dot");
             foreach (var cls in model.Objects.OfType<ClassBuilder>())
             {
+                if (cls.Name == null)
+                    continue;
                 var temp = g.AddNode(cls);
                 string longest = cls.Name==null? "temp":cls.Name;
                 int maxLength = longest.Length;
@@ -134,14 +135,16 @@ namespace WpfDiagramDesigner.UMLReader
             }
             foreach (var en in model.Objects.OfType<EnumerationBuilder>())
             {
+                if (en.Name == null)
+                    continue;
                 var temp = g.AddNode(en);
                 string longest = en.Name == null ? "temp" : en.Name;
                 int maxLength = longest.Length;
 
                 foreach (var att in en.OwnedLiteral)
                 {
-                    longest = maxLength < att.Name.Length ? att.Name : longest;
-                    maxLength = maxLength < att.Name.Length ? att.Name.Length : maxLength;
+                    longest = maxLength < att.Name?.Length ? att.Name : longest;
+                    maxLength = maxLength < att.Name?.Length ? att.Name.Length : maxLength;
                 }
                 Size oneElementSize = FormatedTextSize(longest);
                 oneElementSize.Width += 10;
@@ -164,7 +167,8 @@ namespace WpfDiagramDesigner.UMLReader
             }
             foreach (var intf in model.Objects.OfType<InterfaceBuilder>())
             {
-
+                if (intf.Name == null)
+                    continue;
                 var temp = g.AddNode(intf);
                 string longest = intf.Name == null ? "temp" : intf.Name;
                 int maxLength = longest.Length;
@@ -286,6 +290,16 @@ namespace WpfDiagramDesigner.UMLReader
             {
                 model.RemoveObject(item);
             }
+            var allProperties = model.Objects.OfType<PropertyBuilder>().Where(i => i.Type?.Name == ((NamedElementBuilder)el).Name);
+            foreach (var item in allProperties)
+            {
+                model.RemoveObject(item);
+            }
+            var allFunctions = model.Objects.OfType<ParameterBuilder>().Where(i => i.Type?.Name == ((NamedElementBuilder)el).Name);
+            foreach(var item in allFunctions)
+            {
+                model.RemoveObject(item);
+            }
             model.RemoveObject(el);
         }
 
@@ -311,9 +325,6 @@ namespace WpfDiagramDesigner.UMLReader
                 model = umlSerializer.ReadModelFromFile(inputURL).ToMutable();
             }
             UmlFactory = new UmlFactory(model);
-            var mod = model.Objects.OfType<PackageBuilder>();
-
-            res = mod.Where((i) => { return i.Name == "Logical View"; }).FirstOrDefault();
             return RefreshLayout();
         }
         public static void WriteOut(string output)

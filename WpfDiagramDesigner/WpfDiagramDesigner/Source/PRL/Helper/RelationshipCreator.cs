@@ -31,7 +31,6 @@ namespace WpfDiagramDesigner.Source.PRL.Helper
                 endNode = clickedNode;
                 try
                 {
-                    //TODO switch case with different clickTypes-->UMLReader class creationMethods
                     switch (currentClickType)
                     {
                         case ClickType.AGGREGATION: UMLReader.UmlReader.CreateAggregation(startNode, endNode); break;
@@ -43,8 +42,9 @@ namespace WpfDiagramDesigner.Source.PRL.Helper
                     }
                     startNode = ""; endNode = "";
                 }
-                catch(ClassNotFoundException exception)
+                catch (ClassNotFoundException)
                 {
+                    
                     startNode = "";
                 }
                 return false;
