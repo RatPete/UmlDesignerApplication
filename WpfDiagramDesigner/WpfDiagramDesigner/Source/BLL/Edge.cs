@@ -43,7 +43,7 @@ namespace WpfDiagramDesigner.Objects
         protected abstract Path CreateHead(Point e, Point d);
         private List<BezierSegment> Segments = new List<BezierSegment>();
         Path pathLine;
-        Path headPath;
+        protected Path headPath;
         Canvas canvas;
         public virtual void Draw(Canvas canvas)
         {
@@ -109,7 +109,7 @@ namespace WpfDiagramDesigner.Objects
             };
             SetLineStyle(pathLine);
             canvas.Children.Add(pathLine);
-            canvas.Children.Remove(headPath);
+            //canvas.Children.Remove(headPath);
         }
         protected virtual void SetLineStyle(Path pathLine)
         {
@@ -171,7 +171,7 @@ namespace WpfDiagramDesigner.Objects
                         newLastPoint.X = (newLastPoint.Y - secondLastPoint.Y) * (lastPoint.X - secondLastPoint.X) / (lastPoint.Y - secondLastPoint.Y) + secondLastPoint.X;
                         lastPoint = newLastPoint;
                         var segment = new BezierSegment(new Point(spline[i].X, spline[i].Y), new Point(spline[i + 1].X, spline[i + 1].Y), lastPoint, true);
-                        headPath = CreateHead(lastPoint, new Point(spline[i + 2].X, spline[i + 2].Y));
+                         AnimateHead(lastPoint, new Point(spline[i + 2].X, spline[i + 2].Y),storyboard);
                         segments.Add(segment);
 
                     }
@@ -356,45 +356,7 @@ namespace WpfDiagramDesigner.Objects
                 canvas.Children.Remove(headPath);
             }
         }
+        protected abstract void AnimateHead(Point e, Point d,Storyboard storyboard);
     }
 
 }
-
-/*var edgeAnim = (EdgeAnimationValues)a;
-            List<List<Point2D>> splines = new List<List<Point2D>>();
-            for(int j = 0; j < edgeAnim.TargetPosition.Length;j++)
-            {
-                var spline = edgeAnim.TargetPosition[j];
-                for(int i = 0; i < spline.Length-1; i += 3)
-                {
-                    List<Point2D> points = new List<Point2D>();
-                    points.Add(spline[i]);
-                    points.Add(spline[i+1]);
-                    points.Add(spline[i+2]);
-                    splines.Add(points);
-                }
-            }
-            for(int i = 0; i < segments.Count; i++)
-            {
-                PointAnimation animation = new PointAnimation();
-                animation.From = segments[i].Point1;
-                animation.To = new Point(splines[i][0].X,splines[i][0].Y);
-                animation.Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2));
-                Storyboard.SetTarget(animation, pathLine);
-                Storyboard.SetTargetProperty(animation, new PropertyPath($"Data.Figures[0].Segments[{i}].Point1"));
-                storyboard.Children.Add(animation);
-                PointAnimation animation2 = new PointAnimation();
-                animation2.Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2));
-                animation2.From = segments[i].Point2;
-                animation2.To = new Point(splines[i][1].X,splines[i][1].Y);
-                Storyboard.SetTarget(animation2, pathLine);
-                Storyboard.SetTargetProperty(animation2, new PropertyPath($"Data.Figures[0].Segments[{i}].Point2"));
-                storyboard.Children.Add(animation2);
-                PointAnimation animation3 = new PointAnimation();
-                animation3.From = segments[i].Point3;
-                animation3.To = new Point(splines[i][2].X,splines[i][2].Y);
-                animation3.Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2));
-                Storyboard.SetTarget(animation3, pathLine);
-                Storyboard.SetTargetProperty(animation3, new PropertyPath($"Data.Figures[0].Segments[{i}].Point3"));
-                storyboard.Children.Add(animation3);
-           }*/

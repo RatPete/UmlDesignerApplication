@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace WpfDiagramDesigner.Objects
@@ -40,6 +41,63 @@ namespace WpfDiagramDesigner.Objects
             figure.Segments.Add(seg5);
             return figure;
         }
+
+        public static void AnimateArrowHead(Point e, Point d, Storyboard storyboard, Path headPath)
+        {
+            var figure = CreateArrowFigure(e,d);
+            PointAnimation starAnimation = new PointAnimation
+            {
+                From = ((PathGeometry)headPath.Data).Figures[0].StartPoint,
+                To = e,
+                Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+            };
+            Storyboard.SetTarget(starAnimation, headPath);
+            Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[0].StartPoint"));
+            storyboard.Children.Add(starAnimation);
+            int i = 0;
+            foreach (var item in figure.Segments)
+            {
+                PointAnimation pointAnimation = new PointAnimation
+                {
+                    From = ((LineSegment)((PathGeometry)headPath.Data).Figures[0].Segments[i]).Point,
+                    To = ((LineSegment)item).Point,
+                    Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+                };
+                Storyboard.SetTarget(pointAnimation, headPath);
+                Storyboard.SetTargetProperty(pointAnimation, new PropertyPath($"Data.Figures[0].Segments[{i}].Point"));
+                storyboard.Children.Add(pointAnimation);
+                i++;
+            }
+        }
+
+        public static void AnimateTriangleHead(Point e, Point d, Storyboard storyboard,Path headPath)
+        {
+           var figure= CreateTriangleFigure(e, d);
+           PointAnimation starAnimation = new PointAnimation
+            {
+                From =((PathGeometry) headPath.Data).Figures[0].StartPoint,
+                To = e,
+                Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+            };
+            Storyboard.SetTarget(starAnimation, headPath);
+            Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[0].StartPoint"));
+            storyboard.Children.Add(starAnimation);
+            int i = 0;
+            foreach (var item in figure.Segments)
+            {
+                PointAnimation pointAnimation = new PointAnimation
+                {
+                    From = ((LineSegment)((PathGeometry)headPath.Data).Figures[0].Segments[i]).Point,
+                    To = ((LineSegment)item).Point,
+                    Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+                };
+                Storyboard.SetTarget(pointAnimation, headPath);
+                Storyboard.SetTargetProperty(pointAnimation, new PropertyPath($"Data.Figures[0].Segments[{i}].Point"));
+                storyboard.Children.Add(pointAnimation);
+                i++;
+            }
+        }
+
         private static PathFigure CreateTriangleFigure(Point lastPoint, Point endPoint)
         {
             var figure = new PathFigure
@@ -92,6 +150,28 @@ namespace WpfDiagramDesigner.Objects
             };
             return path;
         }
+        public static void AnimateNoHead(Point lastPoint,Point endPoint,Storyboard storyboard,Path headPath)
+        {
+            PointAnimation starAnimation = new PointAnimation
+            {
+                From = ((PathGeometry)headPath.Data).Figures[0].StartPoint,
+                To = lastPoint,
+                Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+            };
+            Storyboard.SetTarget(starAnimation, headPath);
+            Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[0].StartPoint"));
+            storyboard.Children.Add(starAnimation);
+            PointAnimation pointAnimation = new PointAnimation
+            {
+                From = ((LineSegment)((PathGeometry)headPath.Data).Figures[0].Segments[0]).Point,
+                To = endPoint,
+                Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+            };
+            Storyboard.SetTarget(pointAnimation, headPath);
+            Storyboard.SetTargetProperty(pointAnimation, new PropertyPath($"Data.Figures[0].Segments[0].Point"));
+            storyboard.Children.Add(pointAnimation);
+            
+        }
         public static Path CreateNoHead(Point lastPoint, Point endPoint)
         {
             var pathGeo = new PathGeometry();
@@ -109,6 +189,58 @@ namespace WpfDiagramDesigner.Objects
                 Stroke = Brushes.Black
             };
             return path;
+        }
+        public static void AnimateDiamondHead(Point lastPoint,Point endPoint,Storyboard storyboard,Path headPath)
+        {
+            Point middlePoint = new Point((lastPoint.X + endPoint.X) / 2, (lastPoint.Y + endPoint.Y) / 2);
+            var figure = CreateArrowFigure(middlePoint,lastPoint);
+            PointAnimation starAnimation = new PointAnimation
+            {
+                From = ((PathGeometry)headPath.Data).Figures[0].StartPoint,
+                To = middlePoint,
+                Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+            };
+            Storyboard.SetTarget(starAnimation, headPath);
+            Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[0].StartPoint"));
+            storyboard.Children.Add(starAnimation);
+            int i = 0;
+            foreach (var item in figure.Segments)
+            {
+                PointAnimation pointAnimation = new PointAnimation
+                {
+                    From = ((LineSegment)((PathGeometry)headPath.Data).Figures[0].Segments[i]).Point,
+                    To = ((LineSegment)item).Point,
+                    Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+                };
+                Storyboard.SetTarget(pointAnimation, headPath);
+                Storyboard.SetTargetProperty(pointAnimation, new PropertyPath($"Data.Figures[0].Segments[{i}].Point"));
+                storyboard.Children.Add(pointAnimation);
+                i++;
+            }
+            figure = CreateArrowFigure(middlePoint, endPoint);
+            starAnimation = new PointAnimation
+            {
+                From = ((PathGeometry)headPath.Data).Figures[0].StartPoint,
+                To = middlePoint,
+                Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+            };
+            Storyboard.SetTarget(starAnimation, headPath);
+            Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[1].StartPoint"));
+            storyboard.Children.Add(starAnimation);
+            i = 0;
+            foreach (var item in figure.Segments)
+            {
+                PointAnimation pointAnimation = new PointAnimation
+                {
+                    From = ((LineSegment)((PathGeometry)headPath.Data).Figures[1].Segments[i]).Point,
+                    To = ((LineSegment)item).Point,
+                    Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+                };
+                Storyboard.SetTarget(pointAnimation, headPath);
+                Storyboard.SetTargetProperty(pointAnimation, new PropertyPath($"Data.Figures[1].Segments[{i}].Point"));
+                storyboard.Children.Add(pointAnimation);
+                i++;
+            }
         }
         public static Path CreateDiamondHead(Point lastPoint, Point endPoint)
         {

@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace WpfDiagramDesigner.Objects
@@ -15,6 +16,11 @@ namespace WpfDiagramDesigner.Objects
         public AssociationEdge(EdgeLayout edge) : base(edge)
         {
             
+        }
+
+        protected override void AnimateHead(Point e, Point d,Storyboard storyboard)
+        {
+            HeadBuilder.AnimateNoHead(e, d, storyboard, headPath);
         }
 
         protected override Path CreateHead(Point lastPoint,Point endPoint)

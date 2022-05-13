@@ -116,11 +116,11 @@ namespace WpfDiagramDesigner.Views
                 model.Refresh();
             };
             tb.ContextMenu.Items.Add(menuitem);
+            menuitem = new MenuItem();
             menuitem.Header = "Add";
             menuitem.Click += (e, er) =>
             {
                 element.AddLiteral();
-                //tb.Text= UMLReader.UmlReader.CreateAttributeText( item);
                 model.Refresh();
             };
             tb.ContextMenu.Items.Add(menuitem);
