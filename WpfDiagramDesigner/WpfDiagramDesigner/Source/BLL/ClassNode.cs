@@ -106,5 +106,16 @@ namespace WpfDiagramDesigner.Objects
             }
 
         }
+
+        protected override void RefreshAttributes()
+        {
+            if (Attributes.Count != ((ClassBuilder)(node.NodeObject)).OwnedAttribute.Count)
+            {
+                var graphAttrib = NodeElementBuilder.AttributeBuilder(((ClassBuilder)(node.NodeObject)).OwnedAttribute[((ClassBuilder)(node.NodeObject)).OwnedAttribute.Count-1], this, model);
+                graphAttrib.IsEnabled = false;
+                Attributes.Add(graphAttrib);
+                attributePanel.Children.Add(graphAttrib);
+            }
+        }
     }
 }

@@ -116,25 +116,33 @@ namespace WpfDiagramDesigner.Objects
             Canvas.SetTop(border, node.Position.Y - node.Height / 2);
             currentPosition.X = node.Position.X - node.Width / 2;
             currentPosition.Y = node.Position.Y - node.Height / 2;
+            attributePanel.MouseLeftButtonDown += Border_MouseLeftButtonDown;
+            functionPanel.MouseLeftButtonDown += Border_MouseLeftButtonDown;
+            enumPanel.MouseLeftButtonDown += Border_MouseLeftButtonDown;
+            itemPanel.MouseMove += ItemPanel_MouseMove;
             canvas.Children.Add(border);
         }
 
-       
+        private void ItemPanel_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            e.Handled = true;
+        }
 
         private void Border_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
 
             if (RelationshipCreator.NodeClicked(((NamedElementBuilder)node.NodeObject).Name.ToString()))
             {
-
-                model.StartDrawingLine(e);
                 model.Refresh();
+                model.StartDrawingLine(e);
+             
             }
             else
             {
                 model.EndDrawingLine(e);
                 model.Refresh();
             }
+            e.Handled = true;
 
         }
         public abstract void AddFunction();
@@ -187,9 +195,11 @@ namespace WpfDiagramDesigner.Objects
 
 
         }
-
+        protected abstract void RefreshAttributes();
+    
         public void AnimateObject(AnimationValues a, Storyboard storyboard)
         {
+            RefreshAttributes();
             var nodeAnim = (NodeAnimationValues)a;
             DoubleAnimation left = new DoubleAnimation
             {

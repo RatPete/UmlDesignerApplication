@@ -66,36 +66,48 @@ namespace WpfDiagramDesigner
         {
             RelationshipCreator.CurrentClickType = ClickType.AGGREGATION;
             DisableElements();
+            viewModel.CancelLineDraw();
         }
 
         private void Association_Click(object sender, RoutedEventArgs e)
         {
             RelationshipCreator.CurrentClickType = ClickType.ASSOCIATION;
             DisableElements();
+            viewModel.CancelLineDraw();
         }
 
         private void Composition_Click(object sender, RoutedEventArgs e)
         {
             RelationshipCreator.CurrentClickType = ClickType.COMPOSITION;
             DisableElements();
+            viewModel.CancelLineDraw();
         }
 
         private void Inheritance_Click(object sender, RoutedEventArgs e)
         {
             RelationshipCreator.CurrentClickType = ClickType.INHERITANCE;
             DisableElements();
+            viewModel.CancelLineDraw();
         }
 
         private void Dependency_Click(object sender, RoutedEventArgs e)
         {
             RelationshipCreator.CurrentClickType = ClickType.DEPENDENCY;
             DisableElements();
+            viewModel.CancelLineDraw();
         }
 
         private void Realization_Click(object sender, RoutedEventArgs e)
         {
             RelationshipCreator.CurrentClickType = ClickType.REALIZATION;
             DisableElements();
+            viewModel.CancelLineDraw();
+        }
+        private void OneWayAssociation_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.ONEWAYASSOCIATION;
+            DisableElements();
+            viewModel.CancelLineDraw();
         }
 
         private void DisableElements()
@@ -107,6 +119,7 @@ namespace WpfDiagramDesigner
         {
             RelationshipCreator.CurrentClickType = ClickType.NORMAL;
             EnableElements();
+            viewModel.CancelLineDraw();
 
         }
 

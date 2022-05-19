@@ -146,6 +146,7 @@ namespace WpfDiagramDesigner.Objects
             }
             //Path pathHead;
             List<BezierSegment> segments = new List<BezierSegment>();
+            Point startPoint = graphdata.SplinePoints[0][0];
             for (int j = 0; j < graphdata.SplinePoints.Length; j++)
             {
                 var spline = graphdata.SplinePoints[j];
@@ -171,7 +172,7 @@ namespace WpfDiagramDesigner.Objects
                         newLastPoint.X = (newLastPoint.Y - secondLastPoint.Y) * (lastPoint.X - secondLastPoint.X) / (lastPoint.Y - secondLastPoint.Y) + secondLastPoint.X;
                         lastPoint = newLastPoint;
                         var segment = new BezierSegment(new Point(spline[i].X, spline[i].Y), new Point(spline[i + 1].X, spline[i + 1].Y), lastPoint, true);
-                         AnimateHead(lastPoint, new Point(spline[i + 2].X, spline[i + 2].Y),storyboard);
+                        AnimateHead(lastPoint, new Point(spline[i + 2].X, spline[i + 2].Y),storyboard);
                         segments.Add(segment);
 
                     }
@@ -188,8 +189,8 @@ namespace WpfDiagramDesigner.Objects
             {
                 PointAnimation starAnimation = new PointAnimation
                 {
-                    From = Segments[0].Point1,
-                    To = segments[0].Point1,
+                    From = ((PathGeometry)pathLine.Data).Figures[0].StartPoint,
+                    To = startPoint,
                     Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
                 };
                 Storyboard.SetTarget(starAnimation, pathLine);
@@ -233,8 +234,8 @@ namespace WpfDiagramDesigner.Objects
                     ExpandEdgeParts(segments.Count - Segments.Count);
                     PointAnimation starAnimation = new PointAnimation
                     {
-                        From = Segments[0].Point1,
-                        To = segments[0].Point1,
+                        From = ((PathGeometry)pathLine.Data).Figures[0].StartPoint,
+                        To = startPoint,
                         Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
                     };
                     Storyboard.SetTarget(starAnimation, pathLine);
@@ -275,8 +276,8 @@ namespace WpfDiagramDesigner.Objects
                 {
                     PointAnimation starAnimation = new PointAnimation
                     {
-                        From = Segments[0].Point1,
-                        To = segments[0].Point1,
+                        From = ((PathGeometry)pathLine.Data).Figures[0].StartPoint,
+                        To = startPoint,
                         Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
                     };
                     Storyboard.SetTarget(starAnimation, pathLine);

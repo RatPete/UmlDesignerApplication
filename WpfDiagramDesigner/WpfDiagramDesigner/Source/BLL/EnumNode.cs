@@ -70,5 +70,9 @@ namespace WpfDiagramDesigner.Objects
             
 
         }
+
+        protected override void RefreshAttributes()
+        {
+        }
     }
 }

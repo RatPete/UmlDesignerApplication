@@ -190,78 +190,156 @@ namespace WpfDiagramDesigner.Objects
             };
             return path;
         }
-        public static void AnimateDiamondHead(Point lastPoint,Point endPoint,Storyboard storyboard,Path headPath)
+        //public static void AnimateDiamondHead(Point lastPoint,Point endPoint,Storyboard storyboard,Path headPath)
+        //{
+        //    Point middlePoint = new Point((lastPoint.X + endPoint.X) / 2, (lastPoint.Y + endPoint.Y) / 2);
+        //    var figure = CreateArrowFigure(middlePoint,lastPoint);
+        //    PointAnimation starAnimation = new PointAnimation
+        //    {
+        //        From = ((PathGeometry)headPath.Data).Figures[0].StartPoint,
+        //        To = middlePoint,
+        //        Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+        //    };
+        //    Storyboard.SetTarget(starAnimation, headPath);
+        //    Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[0].StartPoint"));
+        //    storyboard.Children.Add(starAnimation);
+        //    int i = 0;
+        //    foreach (var item in figure.Segments)
+        //    {
+        //        PointAnimation pointAnimation = new PointAnimation
+        //        {
+        //            From = ((LineSegment)((PathGeometry)headPath.Data).Figures[0].Segments[i]).Point,
+        //            To = ((LineSegment)item).Point,
+        //            Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+        //        };
+        //        Storyboard.SetTarget(pointAnimation, headPath);
+        //        Storyboard.SetTargetProperty(pointAnimation, new PropertyPath($"Data.Figures[0].Segments[{i}].Point"));
+        //        storyboard.Children.Add(pointAnimation);
+        //        i++;
+        //    }
+        //    figure = CreateArrowFigure(middlePoint, endPoint);
+        //    starAnimation = new PointAnimation
+        //    {
+        //        From = ((PathGeometry)headPath.Data).Figures[0].StartPoint,
+        //        To = middlePoint,
+        //        Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+        //    };
+        //    Storyboard.SetTarget(starAnimation, headPath);
+        //    Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[1].StartPoint"));
+        //    storyboard.Children.Add(starAnimation);
+        //    i = 0;
+        //    foreach (var item in figure.Segments)
+        //    {
+        //        PointAnimation pointAnimation = new PointAnimation
+        //        {
+        //            From = ((LineSegment)((PathGeometry)headPath.Data).Figures[1].Segments[i]).Point,
+        //            To = ((LineSegment)item).Point,
+        //            Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+        //        };
+        //        Storyboard.SetTarget(pointAnimation, headPath);
+        //        Storyboard.SetTargetProperty(pointAnimation, new PropertyPath($"Data.Figures[1].Segments[{i}].Point"));
+        //        storyboard.Children.Add(pointAnimation);
+        //        i++;
+        //    }
+        //}
+        public static Path CreateFullDiamondHead(Point lastPoint,Point endPoint)
         {
+            Path path = CreateEmptyDiamondHead(lastPoint, endPoint);
+            path.Fill = Brushes.Black;
+            return path;
+        }
+        public static Path CreateEmptyDiamondHead(Point lastPoint, Point endPoint)
+        {
+            Matrix m = Matrix.Identity;
+            m.Rotate(90);
             Point middlePoint = new Point((lastPoint.X + endPoint.X) / 2, (lastPoint.Y + endPoint.Y) / 2);
-            var figure = CreateArrowFigure(middlePoint,lastPoint);
+            Vector v1 = new Vector(middlePoint.X, middlePoint.Y);
+            Vector v2 = new Vector(endPoint.X, endPoint.Y);
+            Vector v3 = v2 - v1;
+            v3.Normalize();
+            v3 = m.Transform(v3) * 3;
+            Point point1 = new Point((v3 + v1).X, (v3 + v1).Y);
+            Vector v3Neg = v3;
+            v3Neg.Negate();
+            Point point2 = new Point(((v3Neg + v1)).X, ((v3Neg + v1)).Y);
+            PathGeometry polygon = new PathGeometry();
+            PathFigure figure = new PathFigure
+            {
+                StartPoint = endPoint,
+                IsClosed = true
+            };
+            var seg = new LineSegment() { Point = point1 };
+            var seg2 = new LineSegment() { Point = lastPoint };
+            var seg3 = new LineSegment() { Point = point2 };
+            figure.Segments.Add(seg);
+            figure.Segments.Add(seg2);
+            figure.Segments.Add(seg3);
+            polygon.Figures.Add(figure);
+            
+            Path path = new Path()
+            {
+                Data = polygon,
+                Stroke = Brushes.Black,
+                Fill = Brushes.Transparent,
+               
+            };
+            return path;
+        }
+        public static void AnimateDiamondHead(Point lastPoint, Point endPoint, Storyboard storyboard, Path headPath)
+        {
+            Matrix m = Matrix.Identity;
+            m.Rotate(90);
+            Point middlePoint = new Point((lastPoint.X + endPoint.X) / 2, (lastPoint.Y + endPoint.Y) / 2);
+            Vector v1 = new Vector(middlePoint.X, middlePoint.Y);
+            Vector v2 = new Vector(endPoint.X, endPoint.Y);
+            Vector v3 = v2 - v1;
+            v3.Normalize();
+            v3 = m.Transform(v3) * 3;
+            Point point1 = new Point((v3 + v1).X, (v3 + v1).Y);
+            Vector v3Neg = v3;
+            v3Neg.Negate();
+            Point point2 = new Point(((v3Neg + v1)).X, ((v3Neg + v1)).Y);
             PointAnimation starAnimation = new PointAnimation
             {
                 From = ((PathGeometry)headPath.Data).Figures[0].StartPoint,
-                To = middlePoint,
+                To = endPoint,
                 Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
             };
             Storyboard.SetTarget(starAnimation, headPath);
             Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[0].StartPoint"));
             storyboard.Children.Add(starAnimation);
-            int i = 0;
-            foreach (var item in figure.Segments)
+            PointAnimation point1anim = new PointAnimation
             {
-                PointAnimation pointAnimation = new PointAnimation
-                {
-                    From = ((LineSegment)((PathGeometry)headPath.Data).Figures[0].Segments[i]).Point,
-                    To = ((LineSegment)item).Point,
-                    Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-                };
-                Storyboard.SetTarget(pointAnimation, headPath);
-                Storyboard.SetTargetProperty(pointAnimation, new PropertyPath($"Data.Figures[0].Segments[{i}].Point"));
-                storyboard.Children.Add(pointAnimation);
-                i++;
-            }
-            figure = CreateArrowFigure(middlePoint, endPoint);
-            starAnimation = new PointAnimation
-            {
-                From = ((PathGeometry)headPath.Data).Figures[0].StartPoint,
-                To = middlePoint,
+                From = ((LineSegment)((PathGeometry)headPath.Data).Figures[0].Segments[1]).Point,
+                To = point1,
                 Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
             };
-            Storyboard.SetTarget(starAnimation, headPath);
-            Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[1].StartPoint"));
-            storyboard.Children.Add(starAnimation);
-            i = 0;
-            foreach (var item in figure.Segments)
+            Storyboard.SetTarget(point1anim, headPath);
+            Storyboard.SetTargetProperty(point1anim, new PropertyPath("Data.Figures[0].Segments[0].Point"));
+            storyboard.Children.Add(point1anim);
+            PointAnimation point2anim = new PointAnimation
             {
-                PointAnimation pointAnimation = new PointAnimation
-                {
-                    From = ((LineSegment)((PathGeometry)headPath.Data).Figures[1].Segments[i]).Point,
-                    To = ((LineSegment)item).Point,
-                    Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-                };
-                Storyboard.SetTarget(pointAnimation, headPath);
-                Storyboard.SetTargetProperty(pointAnimation, new PropertyPath($"Data.Figures[1].Segments[{i}].Point"));
-                storyboard.Children.Add(pointAnimation);
-                i++;
-            }
-        }
-        public static Path CreateDiamondHead(Point lastPoint, Point endPoint)
-        {
-            Point middlePoint = new Point((lastPoint.X + endPoint.X) / 2, (lastPoint.Y + endPoint.Y) / 2);
-            PathFigure data1 = CreateArrowFigure(middlePoint, lastPoint);
-            PathFigure data2 = CreateArrowFigure(middlePoint,endPoint);
-            //data1.IsClosed = true;
-            data1.IsFilled = true;
-            data2.IsFilled = true;
-            //data2.IsClosed = true;
-            PathGeometry geo = new PathGeometry();
-            geo.Figures.Add(data1);
-            geo.Figures.Add(data2);
-            Path path = new Path()
-            {
-                Data = geo,
-                Stroke = Brushes.Black,
-                Fill = Brushes.Black
+                From = ((LineSegment)((PathGeometry)headPath.Data).Figures[0].Segments[2]).Point,
+                To = lastPoint,
+                Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
             };
-            return path;
+            Storyboard.SetTarget(point2anim, headPath);
+            Storyboard.SetTargetProperty(point2anim, new PropertyPath("Data.Figures[0].Segments[1].Point"));
+            storyboard.Children.Add(point2anim);
+            PointAnimation point3anim = new PointAnimation
+            {
+                From = ((LineSegment)((PathGeometry)headPath.Data).Figures[0].Segments[2]).Point,
+                To = point2,
+                Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+            };
+            Storyboard.SetTarget(point3anim, headPath);
+            Storyboard.SetTargetProperty(point3anim, new PropertyPath("Data.Figures[0].Segments[2].Point"));
+            storyboard.Children.Add(point3anim);
+
+
         }
+
+
     }
 
 }

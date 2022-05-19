@@ -101,14 +101,53 @@ namespace WpfDiagramDesigner.ViewModel
                 }
                 else if (edge.EdgeObject is AssociationBuilder)
                 {
-                    Elements.Add(new AssociationEdge(edge));
+                    DiagramElement element = null;
+                    var assoc = (AssociationBuilder)edge.EdgeObject;
+                    if (assoc.OwnedEnd.Count == 0)
+                    {
+                        element = new AssociationEdge(edge);
+                    }
+                    else
+                    {
+                        if (assoc.OwnedEnd[0].Aggregation == AggregationKind.Composite)
+                        {
+                            element = new CompositionEdge(edge);
+                        }
+                        else if (assoc.OwnedEnd[0].Aggregation == AggregationKind.Shared)
+                        {
+                            element = new AggregationEdge(edge);
+                        }
+                        else
+                        {
+                            element = new OneWayAssociationEdge(edge);
+                        }
+                    }
+                    Elements.Add(element);
                 }
-                canvas.Width = g.Width;
-                canvas.Height = g.Height;
-                
+
+
             }
-            
+            canvas.Width = g.Width;
+            canvas.Height = g.Height;
+            canvas.MouseMove += Canvas_MouseMove;
+
         }
+
+        internal void CancelLineDraw()
+        {
+            if (canvas.Children.Contains(path))
+            {
+                canvas.Children.Remove(path);
+            }
+            if (canvas.Children.Contains(head))
+            {
+                canvas.Children.Remove(head);
+            }
+            path = new Path();
+            head = new Path();
+            drawingStarted = false;
+        }
+
         public void DrawAll()
         {
 
@@ -141,17 +180,21 @@ namespace WpfDiagramDesigner.ViewModel
         bool drawingStarted = false;
         public void StartDrawingLine(System.Windows.Input.MouseButtonEventArgs e)
         {
+            //storyBoard.Stop();
             var element = e.GetPosition(canvas);
             path = new Path();
             path.Stroke = Brushes.Black;
             path.StrokeThickness = 2;
             canvas.Children.Add(path);
             path.Data = new LineGeometry { StartPoint = element,EndPoint=element};
+            canvas.Children.Add(head);
             drawingStarted = true;
 
         }
         public void EndDrawingLine(System.Windows.Input.MouseButtonEventArgs e)
         {
+            canvas.Children.Remove(path);
+            canvas.Children.Remove(head);
             path = new Path();
             head = new Path();
             drawingStarted = false;
@@ -226,8 +269,27 @@ namespace WpfDiagramDesigner.ViewModel
                     }
                     else if (edge.EdgeObject is AssociationBuilder)
                     {
-                        element = new AssociationEdge(edge);
-                        Elements.Add(element);
+                        var assoc = (AssociationBuilder)edge.EdgeObject;
+                        if (assoc.OwnedEnd.Count == 0)
+                        {
+                            element = new AssociationEdge(edge);
+                        }
+                        else
+                        {
+                            if (assoc.OwnedEnd[0].Aggregation == AggregationKind.Composite)
+                            {
+                                element = new CompositionEdge(edge);
+                            }
+                            else if (assoc.OwnedEnd[0].Aggregation == AggregationKind.Shared)
+                            {
+                                element = new AggregationEdge(edge);
+                            }
+                            else
+                            {
+                                element = new OneWayAssociationEdge(edge);
+                            }
+                            Elements.Add(element);
+                        }
                     }
                     if (element != null)
                     {
@@ -248,15 +310,19 @@ namespace WpfDiagramDesigner.ViewModel
             canvas.Width = g.Width;
             canvas.Height = g.Height;
         }
+
         private void Canvas_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            //storyBoard.Stop();
+            
             if (drawingStarted)
             {
+                //storyBoard.Stop();
                 var geometryData = ((LineGeometry)path.Data);
                 var lastPoint = e.GetPosition(canvas);
                 var newLastPoint = new Point();
                 var startPoint = geometryData.StartPoint;
+                if ((startPoint.X - lastPoint.X) * (startPoint.X - lastPoint.X) + (startPoint.Y - lastPoint.Y) * (startPoint.Y - lastPoint.Y) < 20)
+                    return;
                 if (lastPoint.Y - startPoint.Y > 0)
                     newLastPoint.Y = lastPoint.Y - 3;
                 else if (lastPoint.Y - startPoint.Y == 0)
@@ -280,7 +346,8 @@ namespace WpfDiagramDesigner.ViewModel
 
                 geometryData.EndPoint = newLastPoint;
                 RelationshipCreator.GenerateArrow(newLastPoint, lastPoint, path, head);
-                
+                head.IsEnabled = false;
+                path.IsEnabled = false;
                 
             }
 

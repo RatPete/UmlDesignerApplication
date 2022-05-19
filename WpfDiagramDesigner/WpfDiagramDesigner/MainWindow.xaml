@@ -52,6 +52,8 @@
                                          Label="Inheritance" SmallImageSource="/inheritance.png" Click="Inheritance_Click"/>
                     <RibbonButton x:Name="Realization"
                                          Label="Realization" SmallImageSource="/realization.png" Click="Realization_Click"/>
+                    <RibbonButton x:Name="OneWayAssocitation"
+                                         Label="One way association" SmallImageSource="/assoc.png" Click="OneWayAssociation_Click"/>
                     <RibbonButton x:Name="Normal"
                                          Label="Normal" Click="Normal_Click"/>
                 </RibbonGroup>

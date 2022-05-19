@@ -11,12 +11,18 @@ namespace WpfDiagramDesigner.Source.PRL.Helper
     public static class RelationshipCreator
     {
         private static ClickType currentClickType;
-        private static string startNode="";
-        private static string endNode="";
-        public static ClickType CurrentClickType { set { if (currentClickType != value)
+        private static string startNode = "";
+        private static string endNode = "";
+        public static ClickType CurrentClickType
+        {
+            set
+            {
+                if (currentClickType != value)
                 {
-                    currentClickType = value;startNode = "";endNode = "";
-                } } }
+                    currentClickType = value; startNode = ""; endNode = "";
+                }
+            }
+        }
         public static bool NodeClicked(string clickedNode)
         {
             if (currentClickType == ClickType.NORMAL)
@@ -39,29 +45,33 @@ namespace WpfDiagramDesigner.Source.PRL.Helper
                         case ClickType.DEPENDENCY: UMLReader.UmlReader.CreateDependency(startNode, endNode); break;
                         case ClickType.INHERITANCE: UMLReader.UmlReader.CreateInheritance(startNode, endNode); break;
                         case ClickType.REALIZATION: UMLReader.UmlReader.CreateRealization(startNode, endNode); break;
+                        case ClickType.ONEWAYASSOCIATION: UMLReader.UmlReader.CreateOneWayAssociation(startNode, endNode); break;
                     }
                     startNode = ""; endNode = "";
                 }
                 catch (ClassNotFoundException)
                 {
-                    
+
                     startNode = "";
                 }
                 return false;
             }
         }
-        public static void GenerateArrow(Point start,Point end,Path body, Path head)
+        public static void GenerateArrow(Point start, Point end, Path body, Path head)
         {
-            Path temp;
-            switch(currentClickType)
-                {
-                    case ClickType.AGGREGATION: LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateDiamondHead(start, end);head.Data = temp.Data;head.Stroke = temp.Stroke; break;
-                    case ClickType.ASSOCIATION: LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateArrowHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
-                    case ClickType.COMPOSITION: LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateDiamondHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
-                    case ClickType.DEPENDENCY: LineBuilder.DashedLine(body); temp = HeadBuilder.CreateArrowHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
-                    case ClickType.INHERITANCE: LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateTriangleHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
-                    case ClickType.REALIZATION: LineBuilder.DashedLine(body); temp = HeadBuilder.CreateTriangleHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
+            Path temp = new Path(); ;
+            switch (currentClickType)
+            {
+                case ClickType.AGGREGATION: LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateEmptyDiamondHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; head.Fill = temp.Fill; break;
+                case ClickType.ASSOCIATION: LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateNoHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
+                case ClickType.COMPOSITION: LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateFullDiamondHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; head.Fill = temp.Fill; break;
+                case ClickType.DEPENDENCY: LineBuilder.DashedLine(body); temp = HeadBuilder.CreateArrowHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
+                case ClickType.INHERITANCE: LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateTriangleHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
+                case ClickType.REALIZATION: LineBuilder.DashedLine(body); temp = HeadBuilder.CreateTriangleHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
+                case ClickType.ONEWAYASSOCIATION:LineBuilder.NonDashedLine(body); temp = HeadBuilder.CreateArrowHead(start, end); head.Data = temp.Data; head.Stroke = temp.Stroke; break;
+
             }
+
         }
     }
 }
