@@ -18,17 +18,7 @@ namespace WpfDiagramDesigner.Objects
                 IsClosed = false,
                 StartPoint = lastPoint
             };
-            Matrix m = Matrix.Identity;
-            m.Rotate(90);
-            Vector v1 = new Vector(lastPoint.X, lastPoint.Y);
-            Vector v2 = new Vector(endPoint.X, endPoint.Y);
-            Vector v3 = v2 - v1;
-            v3.Normalize();
-            v3 = m.Transform(v3) * 3;
-            Point point1 = new Point((v3 + v1).X, (v3 + v1).Y);
-            Vector v3Neg = v3;
-            v3Neg.Negate();
-            Point point2 = new Point(((v3Neg + v1)).X, ((v3Neg + v1)).Y);
+            CalculateDiagonalPoints(lastPoint, endPoint, out Point point1, out Point point2);
             var seg = new LineSegment() { Point = point1, IsStroked = false };
             var seg2 = new LineSegment() { Point = endPoint };
             var seg3 = new LineSegment() { Point = point2 };
@@ -105,17 +95,7 @@ namespace WpfDiagramDesigner.Objects
                 IsClosed = true,
                 StartPoint = lastPoint,
             };
-            Matrix m = Matrix.Identity;
-            m.Rotate(90);
-            Vector v1 = new Vector(lastPoint.X, lastPoint.Y);
-            Vector v2 = new Vector(endPoint.X, endPoint.Y);
-            Vector v3 = v2 - v1;
-            v3.Normalize();
-            v3 = m.Transform(v3) * 3;
-            Point point1 = new Point((v3 + v1).X, (v3 + v1).Y);
-            Vector v3Neg = v3;
-            v3Neg.Negate();
-            Point point2 = new Point(((v3Neg + v1)).X, ((v3Neg + v1)).Y);
+            CalculateDiagonalPoints(lastPoint, endPoint, out Point point1, out Point point2);
             var seg = new LineSegment() { Point = point1 };
             var seg2 = new LineSegment() { Point = endPoint };
             var seg3 = new LineSegment() { Point = point2 };
@@ -190,78 +170,30 @@ namespace WpfDiagramDesigner.Objects
             };
             return path;
         }
-        //public static void AnimateDiamondHead(Point lastPoint,Point endPoint,Storyboard storyboard,Path headPath)
-        //{
-        //    Point middlePoint = new Point((lastPoint.X + endPoint.X) / 2, (lastPoint.Y + endPoint.Y) / 2);
-        //    var figure = CreateArrowFigure(middlePoint,lastPoint);
-        //    PointAnimation starAnimation = new PointAnimation
-        //    {
-        //        From = ((PathGeometry)headPath.Data).Figures[0].StartPoint,
-        //        To = middlePoint,
-        //        Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-        //    };
-        //    Storyboard.SetTarget(starAnimation, headPath);
-        //    Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[0].StartPoint"));
-        //    storyboard.Children.Add(starAnimation);
-        //    int i = 0;
-        //    foreach (var item in figure.Segments)
-        //    {
-        //        PointAnimation pointAnimation = new PointAnimation
-        //        {
-        //            From = ((LineSegment)((PathGeometry)headPath.Data).Figures[0].Segments[i]).Point,
-        //            To = ((LineSegment)item).Point,
-        //            Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-        //        };
-        //        Storyboard.SetTarget(pointAnimation, headPath);
-        //        Storyboard.SetTargetProperty(pointAnimation, new PropertyPath($"Data.Figures[0].Segments[{i}].Point"));
-        //        storyboard.Children.Add(pointAnimation);
-        //        i++;
-        //    }
-        //    figure = CreateArrowFigure(middlePoint, endPoint);
-        //    starAnimation = new PointAnimation
-        //    {
-        //        From = ((PathGeometry)headPath.Data).Figures[0].StartPoint,
-        //        To = middlePoint,
-        //        Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-        //    };
-        //    Storyboard.SetTarget(starAnimation, headPath);
-        //    Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[1].StartPoint"));
-        //    storyboard.Children.Add(starAnimation);
-        //    i = 0;
-        //    foreach (var item in figure.Segments)
-        //    {
-        //        PointAnimation pointAnimation = new PointAnimation
-        //        {
-        //            From = ((LineSegment)((PathGeometry)headPath.Data).Figures[1].Segments[i]).Point,
-        //            To = ((LineSegment)item).Point,
-        //            Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-        //        };
-        //        Storyboard.SetTarget(pointAnimation, headPath);
-        //        Storyboard.SetTargetProperty(pointAnimation, new PropertyPath($"Data.Figures[1].Segments[{i}].Point"));
-        //        storyboard.Children.Add(pointAnimation);
-        //        i++;
-        //    }
-        //}
         public static Path CreateFullDiamondHead(Point lastPoint,Point endPoint)
         {
             Path path = CreateEmptyDiamondHead(lastPoint, endPoint);
             path.Fill = Brushes.Black;
             return path;
         }
-        public static Path CreateEmptyDiamondHead(Point lastPoint, Point endPoint)
+        private static void CalculateDiagonalPoints(Point lastPoint,Point endPoint,out Point point1,out Point point2)
         {
             Matrix m = Matrix.Identity;
             m.Rotate(90);
-            Point middlePoint = new Point((lastPoint.X + endPoint.X) / 2, (lastPoint.Y + endPoint.Y) / 2);
-            Vector v1 = new Vector(middlePoint.X, middlePoint.Y);
+            Vector v1 = new Vector(lastPoint.X, lastPoint.Y);
             Vector v2 = new Vector(endPoint.X, endPoint.Y);
             Vector v3 = v2 - v1;
             v3.Normalize();
             v3 = m.Transform(v3) * 3;
-            Point point1 = new Point((v3 + v1).X, (v3 + v1).Y);
+            point1 = new Point((v3 + v1).X, (v3 + v1).Y);
             Vector v3Neg = v3;
             v3Neg.Negate();
-            Point point2 = new Point(((v3Neg + v1)).X, ((v3Neg + v1)).Y);
+            point2 = new Point(((v3Neg + v1)).X, ((v3Neg + v1)).Y);
+        }
+        public static Path CreateEmptyDiamondHead(Point lastPoint, Point endPoint)
+        {
+            Point middlePoint = new Point((lastPoint.X + endPoint.X) / 2, (lastPoint.Y + endPoint.Y) / 2);
+            CalculateDiagonalPoints(middlePoint, endPoint, out Point point1, out Point point2);
             PathGeometry polygon = new PathGeometry();
             PathFigure figure = new PathFigure
             {
@@ -287,18 +219,9 @@ namespace WpfDiagramDesigner.Objects
         }
         public static void AnimateDiamondHead(Point lastPoint, Point endPoint, Storyboard storyboard, Path headPath)
         {
-            Matrix m = Matrix.Identity;
-            m.Rotate(90);
+           
             Point middlePoint = new Point((lastPoint.X + endPoint.X) / 2, (lastPoint.Y + endPoint.Y) / 2);
-            Vector v1 = new Vector(middlePoint.X, middlePoint.Y);
-            Vector v2 = new Vector(endPoint.X, endPoint.Y);
-            Vector v3 = v2 - v1;
-            v3.Normalize();
-            v3 = m.Transform(v3) * 3;
-            Point point1 = new Point((v3 + v1).X, (v3 + v1).Y);
-            Vector v3Neg = v3;
-            v3Neg.Negate();
-            Point point2 = new Point(((v3Neg + v1)).X, ((v3Neg + v1)).Y);
+            CalculateDiagonalPoints(middlePoint, lastPoint, out Point point1, out Point point2);
             PointAnimation starAnimation = new PointAnimation
             {
                 From = ((PathGeometry)headPath.Data).Figures[0].StartPoint,

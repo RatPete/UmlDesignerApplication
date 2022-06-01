@@ -109,7 +109,6 @@ namespace WpfDiagramDesigner.Objects
             };
             SetLineStyle(pathLine);
             canvas.Children.Add(pathLine);
-            //canvas.Children.Remove(headPath);
         }
         protected virtual void SetLineStyle(Path pathLine)
         {
@@ -144,7 +143,6 @@ namespace WpfDiagramDesigner.Objects
                 }
                 i++;
             }
-            //Path pathHead;
             List<BezierSegment> segments = new List<BezierSegment>();
             Point startPoint = graphdata.SplinePoints[0][0];
             for (int j = 0; j < graphdata.SplinePoints.Length; j++)
@@ -172,7 +170,7 @@ namespace WpfDiagramDesigner.Objects
                         newLastPoint.X = (newLastPoint.Y - secondLastPoint.Y) * (lastPoint.X - secondLastPoint.X) / (lastPoint.Y - secondLastPoint.Y) + secondLastPoint.X;
                         lastPoint = newLastPoint;
                         var segment = new BezierSegment(new Point(spline[i].X, spline[i].Y), new Point(spline[i + 1].X, spline[i + 1].Y), lastPoint, true);
-                        AnimateHead(lastPoint, new Point(spline[i + 2].X, spline[i + 2].Y),storyboard);
+                        AnimateHead(lastPoint, new Point(spline[i + 2].X, spline[i + 2].Y), storyboard);
                         segments.Add(segment);
 
                     }
@@ -185,147 +183,66 @@ namespace WpfDiagramDesigner.Objects
                 }
 
             }
-            if (segments.Count == Segments.Count)
+
+            if (segments.Count > Segments.Count)
             {
-                PointAnimation starAnimation = new PointAnimation
+                ExpandEdgeParts(segments.Count - Segments.Count);
+            }
+            else if (segments.Count < Segments.Count)
+            {
+                for (int j = 0; j < Segments.Count - segments.Count; j++)
                 {
-                    From = ((PathGeometry)pathLine.Data).Figures[0].StartPoint,
-                    To = startPoint,
+                    segments.Add(segments[segments.Count - 1]);
+                }
+            }
+
+            PointAnimation starAnimation = new PointAnimation
+            {
+                From = ((PathGeometry)pathLine.Data).Figures[0].StartPoint,
+                To = startPoint,
+                Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+            };
+            Storyboard.SetTarget(starAnimation, pathLine);
+            Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[0].StartPoint"));
+            storyboard.Children.Add(starAnimation);
+            for (i = 0; i < segments.Count; i++)
+            {
+                PointAnimation animation = new PointAnimation
+                {
+                    From = Segments[i].Point1,
+                    To = new Point(segments[i].Point1.X, segments[i].Point1.Y),
                     Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
                 };
-                Storyboard.SetTarget(starAnimation, pathLine);
-                Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[0].StartPoint"));
-                storyboard.Children.Add(starAnimation);
-                for (i = 0; i < segments.Count; i++)
+                Storyboard.SetTarget(animation, pathLine);
+                Storyboard.SetTargetProperty(animation, new PropertyPath($"Data.Figures[0].Segments[{i}].Point1"));
+                storyboard.Children.Add(animation);
+                PointAnimation animation2 = new PointAnimation
                 {
-                    PointAnimation animation = new PointAnimation
-                    {
-                        From = Segments[i].Point1,
-                        To = new Point(segments[i].Point1.X, segments[i].Point1.Y),
-                        Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-                    };
-                    Storyboard.SetTarget(animation, pathLine);
-                    Storyboard.SetTargetProperty(animation, new PropertyPath($"Data.Figures[0].Segments[{i}].Point1"));
-                    storyboard.Children.Add(animation);
-                    PointAnimation animation2 = new PointAnimation
-                    {
-                        Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2)),
-                        From = Segments[i].Point2,
-                        To = new Point(segments[i].Point2.X, segments[i].Point2.Y)
-                    };
-                    Storyboard.SetTarget(animation2, pathLine);
-                    Storyboard.SetTargetProperty(animation2, new PropertyPath($"Data.Figures[0].Segments[{i}].Point2"));
-                    storyboard.Children.Add(animation2);
-                    PointAnimation animation3 = new PointAnimation
-                    {
-                        From = Segments[i].Point3,
-                        To = new Point(segments[i].Point3.X, segments[i].Point3.Y),
-                        Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-                    };
-                    Storyboard.SetTarget(animation3, pathLine);
-                    Storyboard.SetTargetProperty(animation3, new PropertyPath($"Data.Figures[0].Segments[{i}].Point3"));
-                    storyboard.Children.Add(animation3);
-                }
+                    Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2)),
+                    From = Segments[i].Point2,
+                    To = new Point(segments[i].Point2.X, segments[i].Point2.Y)
+                };
+                Storyboard.SetTarget(animation2, pathLine);
+                Storyboard.SetTargetProperty(animation2, new PropertyPath($"Data.Figures[0].Segments[{i}].Point2"));
+                storyboard.Children.Add(animation2);
+                PointAnimation animation3 = new PointAnimation
+                {
+                    From = Segments[i].Point3,
+                    To = new Point(segments[i].Point3.X, segments[i].Point3.Y),
+                    Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+                };
+                Storyboard.SetTarget(animation3, pathLine);
+                Storyboard.SetTargetProperty(animation3, new PropertyPath($"Data.Figures[0].Segments[{i}].Point3"));
+                storyboard.Children.Add(animation3);
             }
-            else
-            {
-                if (segments.Count > Segments.Count)
-                {
-                    ExpandEdgeParts(segments.Count - Segments.Count);
-                    PointAnimation starAnimation = new PointAnimation
-                    {
-                        From = ((PathGeometry)pathLine.Data).Figures[0].StartPoint,
-                        To = startPoint,
-                        Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-                    };
-                    Storyboard.SetTarget(starAnimation, pathLine);
-                    Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[0].StartPoint"));
-                    storyboard.Children.Add(starAnimation);
-                    for (i = 0; i < segments.Count; i++)
-                    {
-                        PointAnimation animation = new PointAnimation
-                        {
-                            From = Segments[i].Point1,
-                            To = new Point(segments[i].Point1.X, segments[i].Point1.Y),
-                            Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-                        };
-                        Storyboard.SetTarget(animation, pathLine);
-                        Storyboard.SetTargetProperty(animation, new PropertyPath($"Data.Figures[0].Segments[{i}].Point1"));
-                        storyboard.Children.Add(animation);
-                        PointAnimation animation2 = new PointAnimation
-                        {
-                            Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2)),
-                            From = Segments[i].Point2,
-                            To = new Point(segments[i].Point2.X, segments[i].Point2.Y)
-                        };
-                        Storyboard.SetTarget(animation2, pathLine);
-                        Storyboard.SetTargetProperty(animation2, new PropertyPath($"Data.Figures[0].Segments[{i}].Point2"));
-                        storyboard.Children.Add(animation2);
-                        PointAnimation animation3 = new PointAnimation
-                        {
-                            From = Segments[i].Point3,
-                            To = new Point(segments[i].Point3.X, segments[i].Point3.Y),
-                            Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-                        };
-                        Storyboard.SetTarget(animation3, pathLine);
-                        Storyboard.SetTargetProperty(animation3, new PropertyPath($"Data.Figures[0].Segments[{i}].Point3"));
-                        storyboard.Children.Add(animation3);
-                    }
-                }
-                else
-                {
-                    PointAnimation starAnimation = new PointAnimation
-                    {
-                        From = ((PathGeometry)pathLine.Data).Figures[0].StartPoint,
-                        To = startPoint,
-                        Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-                    };
-                    Storyboard.SetTarget(starAnimation, pathLine);
-                    Storyboard.SetTargetProperty(starAnimation, new PropertyPath("Data.Figures[0].StartPoint"));
-                    storyboard.Children.Add(starAnimation);
-                    for (int j = 0; j < Segments.Count - segments.Count; j++)
-                    {
-                        segments.Add(segments[segments.Count - 1]);
-                    }
-                    for (i = 0; i < segments.Count; i++)
-                    {
-                        PointAnimation animation = new PointAnimation
-                        {
-                            From = Segments[i].Point1,
-                            To = new Point(segments[i].Point1.X, segments[i].Point1.Y),
-                            Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-                        };
-                        Storyboard.SetTarget(animation, pathLine);
-                        Storyboard.SetTargetProperty(animation, new PropertyPath($"Data.Figures[0].Segments[{i}].Point1"));
-                        storyboard.Children.Add(animation);
-                        PointAnimation animation2 = new PointAnimation
-                        {
-                            Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2)),
-                            From = Segments[i].Point2,
-                            To = new Point(segments[i].Point2.X, segments[i].Point2.Y)
-                        };
-                        Storyboard.SetTarget(animation2, pathLine);
-                        Storyboard.SetTargetProperty(animation2, new PropertyPath($"Data.Figures[0].Segments[{i}].Point2"));
-                        storyboard.Children.Add(animation2);
-                        PointAnimation animation3 = new PointAnimation
-                        {
-                            From = Segments[i].Point3,
-                            To = new Point(segments[i].Point3.X, segments[i].Point3.Y),
-                            Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-                        };
-                        Storyboard.SetTarget(animation3, pathLine);
-                        Storyboard.SetTargetProperty(animation3, new PropertyPath($"Data.Figures[0].Segments[{i}].Point3"));
-                        storyboard.Children.Add(animation3);
-                    }
-                }
-            }
+
             Segments = segments;
 
         }
         private void ExpandEdgeParts(int increaseBy)
         {
             canvas.Children.Remove(pathLine);
-            for(int i = 0; i < increaseBy; i++)
+            for (int i = 0; i < increaseBy; i++)
             {
                 Segments.Add(Segments[Segments.Count - 1]);
             }
@@ -335,7 +252,7 @@ namespace WpfDiagramDesigner.Objects
             figure.StartPoint = Segments[0].Point1;
             foreach (var segment in Segments)
             {
-                
+
                 figure.Segments.Add(segment);
             }
             path.Figures.Add(figure);
@@ -351,13 +268,16 @@ namespace WpfDiagramDesigner.Objects
 
         public void RemoveFromCanvas(Canvas canvas)
         {
-            canvas.Children.Remove(pathLine);
+            if (canvas.Children.Contains(pathLine))
+            {
+                canvas.Children.Remove(pathLine);
+            }
             if (canvas.Children.Contains(headPath))
             {
                 canvas.Children.Remove(headPath);
             }
         }
-        protected abstract void AnimateHead(Point e, Point d,Storyboard storyboard);
+        protected abstract void AnimateHead(Point e, Point d, Storyboard storyboard);
     }
 
 }

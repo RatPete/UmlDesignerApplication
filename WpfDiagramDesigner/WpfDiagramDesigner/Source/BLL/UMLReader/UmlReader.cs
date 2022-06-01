@@ -17,6 +17,7 @@ namespace WpfDiagramDesigner.UMLReader
     public static class UmlReader
     {
         private static MetaDslx.Modeling.MutableModel model;
+        private static int objectCounter = 0;
         public static string CreateFunctionText(OperationBuilder item)
         {
             string elementText = "";
@@ -55,25 +56,23 @@ namespace WpfDiagramDesigner.UMLReader
             return elementText;
         }
 
-        
-
         public static void CreateClass()
         {
-           var newClass= UmlFactory.Class();
-            newClass.Name = "NewClass";
+            var newClass = UmlFactory.Class();
+            newClass.Name = "NewClass" + objectCounter++;
         }
 
         public static void CreateEnum()
         {
-            var newEnum=UmlFactory.Enumeration();
-            newEnum.Name = "NewEnum";
+            var newEnum = UmlFactory.Enumeration();
+            newEnum.Name = "NewEnum" + objectCounter++;
         }
 
         public static void CreateInterface()
         {
-            
-            var inter=UmlFactory.Interface();
-            inter.Name = "NewInterface";
+
+            var inter = UmlFactory.Interface();
+            inter.Name = "NewInterface" + objectCounter++;
         }
 
         public static string CreateAttributeText(PropertyBuilder item)
@@ -98,7 +97,7 @@ namespace WpfDiagramDesigner.UMLReader
                 if (cls.Name == null)
                     continue;
                 var temp = g.AddNode(cls);
-                string longest = cls.Name==null? "temp":cls.Name;
+                string longest = cls.Name == null ? "temp" : cls.Name;
                 int maxLength = longest.Length;
                 foreach (var att in cls.OwnedAttribute)
                 {
@@ -118,18 +117,9 @@ namespace WpfDiagramDesigner.UMLReader
                 Size oneElementSize = FormatedTextSize(longest);
                 oneElementSize.Width += 10;
                 oneElementSize.Height *= preferedSize;
-                if (cls.OwnedAttribute.Count != 0)
-                {
-                    oneElementSize.Height += 3;
-                }
-                if (cls.OwnedOperation.Count != 0)
-                {
-                    oneElementSize.Height += 3;
-                }
-                if (cls.OwnedAttribute.Count != 0 || cls.OwnedOperation.Count != 0)
-                {
-                    oneElementSize.Height += 3;
-                }
+                oneElementSize.Height += 3;
+                oneElementSize.Height += 3;
+                oneElementSize.Height += 3;
                 Point2D prefSize = new Point2D(oneElementSize.Width, oneElementSize.Height);
                 temp.PreferredSize = prefSize;
             }
@@ -223,8 +213,8 @@ namespace WpfDiagramDesigner.UMLReader
 
                 first = assoc.MemberEnd[0].Type?.Name;
                 second = assoc.MemberEnd[1].Type?.Name;
-                
-               
+
+
                 if (g.AllNodes.Any(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second) && g.AllNodes.Any(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == first))
                     if (!g.AllEdges.Any(i => ((NamedElementBuilder)i.Source.NodeObject).Name.ToString() == first && ((NamedElementBuilder)i.Source.NodeObject).Name.ToString() == second && i.EdgeObject is AssociationBuilder))
                         g.AddEdge(g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second).FirstOrDefault().NodeObject, g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == first).FirstOrDefault().NodeObject, assoc);
@@ -274,7 +264,7 @@ namespace WpfDiagramDesigner.UMLReader
         }
         public static void RemoveElementFromModel(ElementBuilder el)
         {
-            
+
             var allInts = model.Objects.OfType<InterfaceRealizationBuilder>().Where(i => i.Client.Contains(el) || i.Supplier.Contains(el));
             foreach (var item in allInts)
             {
@@ -301,7 +291,7 @@ namespace WpfDiagramDesigner.UMLReader
                 model.RemoveObject(item);
             }
             var allFunctions = model.Objects.OfType<ParameterBuilder>().Where(i => i.Type?.Name == ((NamedElementBuilder)el).Name);
-            foreach(var item in allFunctions)
+            foreach (var item in allFunctions)
             {
                 model.RemoveObject(item);
             }
@@ -322,7 +312,7 @@ namespace WpfDiagramDesigner.UMLReader
             if (parts[1].ToLower() == "uml")
             {
                 var umlSerializer = new WhiteStarUmlSerializer();
-                model = umlSerializer.ReadModelFromFile(inputURL,out var diagnostics).ToMutable();
+                model = umlSerializer.ReadModelFromFile(inputURL, out var diagnostics).ToMutable();
             }
             else
             {
@@ -339,7 +329,7 @@ namespace WpfDiagramDesigner.UMLReader
         }
         public static TypeBuilder FindClassByName(string name)
         {
-            if (name == null||name.ToLower() == "void" || name == "" ) return null;
+            if (name == null || name.ToLower() == "void" || name == "") return null;
             var cls = FindClass(name);
             if (cls != null)
                 return cls;
@@ -349,11 +339,11 @@ namespace WpfDiagramDesigner.UMLReader
             var inte = FindInterface(name);
             if (inte != null)
                 return inte;
-            
-            
+
+
             var type = UmlFactory.Class();
             type.Name = name;
-            
+
 
 
             return type;
@@ -403,31 +393,13 @@ namespace WpfDiagramDesigner.UMLReader
         }
         public static void CreateOneWayAssociation(string startNode, string endNode)
         {
-            var assoc = UmlFactory.Association();
-            //var cls1 = FindClass(startNode);
-            var cls2 = FindClass(endNode);
-            var any1 = FindClassByName(startNode);
-            var any2 = FindClassByName(endNode);
-            if (cls2 == null)
-                if (any2 != null)
-                    throw new ClassNotFoundException("Node2 not class");
-                else
-                    throw new ClassNotFoundException("Node2 does not exist error");
-            if (any1 == null)
-                throw new ClassNotFoundException("Node2 does not exist error");
-            var end1 = UmlFactory.Property(); // Kirajzoláskor ez van a cls1 oldalon, de valójában a cls2 hivatkozik rá
-            end1.Type = any1;
-            var end2 = UmlFactory.Property(); // Kirajzoláskor ez van a cls2 oldalon, de valójában a cls1 hivatkozik rá
-            end2.Type = cls2;
-            assoc.OwnedEnd.Add(end2);
-            assoc.MemberEnd.Add(end1);
-            cls2.OwnedAttribute.Add(end1);
+            CreateOneWayAssocWithEndReturn(startNode, endNode);
         }
 
-        public static void CreateAssociation(string startNode,string endNode)
+        public static void CreateAssociation(string startNode, string endNode)
         {
             var assoc = UmlFactory.Association();
-            
+
             var cls1 = FindClass(startNode);
             var cls2 = FindClass(endNode);
             var any1 = FindClassByName(startNode);
@@ -442,20 +414,24 @@ namespace WpfDiagramDesigner.UMLReader
                     throw new ClassNotFoundException("Node2 not class");
                 else
                     throw new ClassNotFoundException("Node2 does not exist error");
-            var end1 = UmlFactory.Property(); // Kirajzoláskor ez van a cls1 oldalon, de valójában a cls2 hivatkozik rá
+            var end1 = UmlFactory.Property(); 
             end1.Type = cls1;
-            var end2 = UmlFactory.Property(); // Kirajzoláskor ez van a cls2 oldalon, de valójában a cls1 hivatkozik rá
+            var end2 = UmlFactory.Property(); 
             end2.Type = cls2;
-            // Ha mindkét irányba navigálható az asszociáció:
+
             assoc.MemberEnd.Add(end1);
             assoc.MemberEnd.Add(end2);
-            cls1.OwnedAttribute.Add(end2); // ********** itt javítottam
-            cls2.OwnedAttribute.Add(end1); // ********** itt javítottam
+            cls1.OwnedAttribute.Add(end2);
+            cls2.OwnedAttribute.Add(end1); 
         }
         public static void CreateAggregation(string startNode, string endNode)
         {
+            var end2 = CreateOneWayAssocWithEndReturn(startNode, endNode);
+            end2.Aggregation = AggregationKind.Shared;
+        }
+        public static PropertyBuilder CreateOneWayAssocWithEndReturn(string startNode,string endNode)
+        {
             var assoc = UmlFactory.Association();
-            //var cls1 = FindClass(startNode);
             var cls2 = FindClass(endNode);
             var any1 = FindClassByName(startNode);
             var any2 = FindClassByName(endNode);
@@ -466,37 +442,19 @@ namespace WpfDiagramDesigner.UMLReader
                     throw new ClassNotFoundException("Node2 does not exist error");
             if (any1 == null)
                 throw new ClassNotFoundException("Node2 does not exist error");
-            var end1 = UmlFactory.Property(); // Kirajzoláskor ez van a cls1 oldalon, de valójában a cls2 hivatkozik rá
+            var end1 = UmlFactory.Property();
             end1.Type = any1;
-            var end2 = UmlFactory.Property(); // Kirajzoláskor ez van a cls2 oldalon, de valójában a cls1 hivatkozik rá
+            var end2 = UmlFactory.Property();
             end2.Type = cls2;
-            end2.Aggregation = AggregationKind.Shared;
             assoc.OwnedEnd.Add(end2);
             assoc.MemberEnd.Add(end1);
             cls2.OwnedAttribute.Add(end1);
+            return end2;
         }
         public static void CreateComposition(string startNode, string endNode)
         {
-            var assoc = UmlFactory.Association();
-            //var cls1 = FindClass(startNode);
-            var cls2 = FindClass(endNode);
-            var any1 = FindClassByName(startNode);
-            var any2 = FindClassByName(endNode);
-            if (cls2 == null)
-                if (any2 != null)
-                    throw new ClassNotFoundException("Node2 not class");
-                else
-                    throw new ClassNotFoundException("Node2 does not exist error");
-            if (any1 == null)
-                throw new ClassNotFoundException("Node2 does not exist error");
-            var end1 = UmlFactory.Property(); // Kirajzoláskor ez van a cls1 oldalon, de valójában a cls2 hivatkozik rá
-            end1.Type = any1;
-            var end2 = UmlFactory.Property(); // Kirajzoláskor ez van a cls2 oldalon, de valójában a cls1 hivatkozik rá
-            end2.Type = cls2;
+            var end2 =CreateOneWayAssocWithEndReturn(startNode, endNode);
             end2.Aggregation = AggregationKind.Composite;
-            assoc.OwnedEnd.Add(end2);
-            assoc.MemberEnd.Add(end1);
-            cls2.OwnedAttribute.Add(end1);
         }
         public static void CreateInheritance(string startNode, string endNode)
         {
@@ -528,9 +486,9 @@ namespace WpfDiagramDesigner.UMLReader
                     throw new ClassNotFoundException("Node2 does not exist error");
 
             var rel = UmlFactory.Generalization();
-            cls1    .Generalization.Add(rel);
-            rel.Specific=cls1;
-            rel.General=cls2;
+            cls1.Generalization.Add(rel);
+            rel.Specific = cls1;
+            rel.General = cls2;
         }
         public static void CreateDependency(string startNode, string endNode)
         {
