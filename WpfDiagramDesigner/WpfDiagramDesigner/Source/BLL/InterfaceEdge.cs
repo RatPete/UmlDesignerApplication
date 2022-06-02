@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
 namespace WpfDiagramDesigner.Objects
@@ -22,6 +23,11 @@ namespace WpfDiagramDesigner.Objects
         protected override Path CreateHead(Point lastPoint, Point endPoint)
         {
             return HeadBuilder.CreateTriangleHead(lastPoint, endPoint);
+        }
+
+        protected override void AnimateHead(Point e, Point d, Storyboard storyboard)
+        {
+            HeadBuilder.AnimateTriangleHead(e, d, storyboard,headPath);
         }
     }
 }

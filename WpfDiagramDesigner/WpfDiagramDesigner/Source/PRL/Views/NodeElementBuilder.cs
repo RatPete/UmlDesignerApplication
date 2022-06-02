@@ -22,7 +22,7 @@ namespace WpfDiagramDesigner.Views
             tb.BorderBrush = Brushes.Transparent;
             tb.BorderThickness = new System.Windows.Thickness(0);
         }
-        public static TextBox FunctionBuilder(MetaDslx.Languages.Uml.Model.OperationBuilder item, ViewModel.IRefreshable model)
+        public static TextBox FunctionBuilder(MetaDslx.Languages.Uml.Model.OperationBuilder item, Objects.Node element, ViewModel.IRefreshable model)
         {
             TextBox tb = new TextBox();
             tb.Text=UMLReader.UmlReader.CreateFunctionText(item);
@@ -40,6 +40,7 @@ namespace WpfDiagramDesigner.Views
             menuitem.Header = "Remove";
             menuitem.Click += (e, er) =>
             {
+                element.RemoveFunction(tb,item);
                 ((ClassBuilder)item.Owner).OwnedOperation.Remove(item);
                 model.Refresh();
             };
@@ -49,6 +50,7 @@ namespace WpfDiagramDesigner.Views
             menuitem.Click += (e, er) =>
             {
                 ((ClassBuilder)item.Owner).OwnedAttribute.Add(UMLReader.UmlReader.UmlFactory.Property());
+                element.AddFunction();
                 model.Refresh();
             };
             tb.ContextMenu.Items.Add(menuitem);
@@ -56,7 +58,7 @@ namespace WpfDiagramDesigner.Views
 
             return tb;
         }
-        public static TextBox AttributeBuilder(PropertyBuilder item, ViewModel.IRefreshable model)
+        public static TextBox AttributeBuilder(PropertyBuilder item, Objects.Node element, ViewModel.IRefreshable model)
         {
             var tb = new TextBox();
             tb.Text=UMLReader.UmlReader.CreateAttributeText( item);
@@ -76,7 +78,7 @@ namespace WpfDiagramDesigner.Views
             {
                 ((ClassBuilder)item.Owner).OwnedAttribute.Remove(item);
                 tb.Text=UMLReader.UmlReader.CreateAttributeText( item);
-
+                element.RemoveAttribute(tb,item);
                 model.Refresh();
             };
             tb.ContextMenu.Items.Add(menuitem);
@@ -85,39 +87,50 @@ namespace WpfDiagramDesigner.Views
             menuitem.Click += (e, er) =>
             {
                 ((ClassBuilder)item.Owner).OwnedAttribute.Add(UMLReader.UmlReader.UmlFactory.Property());
-                tb.Text= UMLReader.UmlReader.CreateAttributeText( item);
+                element.AddAttribute();
+                //tb.Text= UMLReader.UmlReader.CreateAttributeText( item);
                 model.Refresh();
             };
             tb.ContextMenu.Items.Add(menuitem);
             return tb;
         }
 
-        public static TextBox EnumBuilder(EnumerationLiteralBuilder enumerationLiteral, ViewModel.IRefreshable model)
+        public static TextBox EnumBuilder(EnumerationLiteralBuilder enumerationLiteral,Objects.Node element, ViewModel.IRefreshable model)
         {
             var tb = new TextBox();
-            CreateEnumText(tb, enumerationLiteral);
+            StyleTexbox(tb);
+            tb.Text= CreateEnumText( enumerationLiteral);
             tb.LostFocus += (e, er) =>
             {
                 InlineParser.NameParser(tb.Text, enumerationLiteral);
-                CreateEnumText(tb, enumerationLiteral);
+                tb.Text=CreateEnumText( enumerationLiteral);
                 model.Refresh();
             };
             tb.ContextMenu = new ContextMenu();
+
             var menuitem = new MenuItem { Header = "Remove" };
             menuitem.Click += (e, er) =>
             {
+                element.RemoveLiteral(tb,enumerationLiteral);
                 ((EnumerationBuilder)(enumerationLiteral.Owner)).OwnedLiteral.Remove(enumerationLiteral);
                 model.Refresh();
             };
             tb.ContextMenu.Items.Add(menuitem);
+            menuitem = new MenuItem();
+            menuitem.Header = "Add";
+            menuitem.Click += (e, er) =>
+            {
+                element.AddLiteral();
+                model.Refresh();
+            };
+            tb.ContextMenu.Items.Add(menuitem);
 
             return tb;
         }
 
-        private static void CreateEnumText(TextBox tb, EnumerationLiteralBuilder enumerationLiteral)
+        private static string CreateEnumText( EnumerationLiteralBuilder enumerationLiteral)
         {
-            tb.Text = enumerationLiteral?.Name;
-            StyleTexbox(tb);
+            return enumerationLiteral.Name;
         }
     }
 }

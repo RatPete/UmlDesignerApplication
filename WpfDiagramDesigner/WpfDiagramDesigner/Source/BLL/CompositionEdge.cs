@@ -1,4 +1,5 @@
 ﻿using MetaDslx.GraphViz;
+using MetaDslx.Languages.Uml.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,25 +11,20 @@ using System.Windows.Shapes;
 
 namespace WpfDiagramDesigner.Objects
 {
-    class DependencyEdge : Edge
+    class CompositionEdge : AssociationEdge
     {
-        public DependencyEdge(EdgeLayout edge) : base(edge)
+        public CompositionEdge(EdgeLayout edge) : base(edge)
         {
         }
-
         protected override void AnimateHead(Point e, Point d, Storyboard storyboard)
         {
-            HeadBuilder.AnimateArrowHead(e, d, storyboard, headPath);
+            HeadBuilder.AnimateDiamondHead(e, d, storyboard, headPath);
         }
 
         protected override Path CreateHead(Point lastPoint, Point endPoint)
         {
-            return HeadBuilder.CreateArrowHead(lastPoint, endPoint);
+            return HeadBuilder.CreateFullDiamondHead(lastPoint, endPoint);
         }
 
-        protected override void SetLineStyle(Path pathLine)
-        {
-            LineBuilder.DashedLine(pathLine);
-        }
     }
 }
