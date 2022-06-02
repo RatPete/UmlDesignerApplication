@@ -1,4 +1,5 @@
 ﻿using MetaDslx.GraphViz;
+using MetaDslx.Languages.Uml.Model;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,12 +11,11 @@ using System.Windows.Shapes;
 
 namespace WpfDiagramDesigner.Objects
 {
-    class DependencyEdge : Edge
+    class OneWayAssociationEdge : AssociationEdge
     {
-        public DependencyEdge(EdgeLayout edge) : base(edge)
+        public OneWayAssociationEdge(EdgeLayout edge) : base(edge)
         {
         }
-
         protected override void AnimateHead(Point e, Point d, Storyboard storyboard)
         {
             HeadBuilder.AnimateArrowHead(e, d, storyboard, headPath);
@@ -28,7 +28,7 @@ namespace WpfDiagramDesigner.Objects
 
         protected override void SetLineStyle(Path pathLine)
         {
-            LineBuilder.DashedLine(pathLine);
+            LineBuilder.NonDashedLine(pathLine);
         }
     }
 }

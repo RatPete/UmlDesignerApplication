@@ -114,8 +114,8 @@ namespace WpfDiagramDesigner
         {
             if (ValidName(name))
             {
-                if(element.Name!=null)
                 element.Name = name;
+                
             }
         }
         private static bool ValidName(string name)

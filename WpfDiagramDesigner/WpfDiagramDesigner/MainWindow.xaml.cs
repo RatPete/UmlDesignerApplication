@@ -19,6 +19,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfDiagramDesigner.Objects;
+using WpfDiagramDesigner.Source.PRL.Helper;
 using WpfDiagramDesigner.UMLReader;
 using WpfDiagramDesigner.ViewModel;
 
@@ -47,6 +48,12 @@ namespace WpfDiagramDesigner
             }
                 
         }
+        private void New_Diagram_Click(object sender,RoutedEventArgs e)
+        {
+            viewModel = new MainViewModel(canvas);
+            viewModel.InitDiagram("");
+            viewModel.DrawAll();
+        }
         private void Save_Click(object sender, RoutedEventArgs e)
         {
             SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -55,5 +62,70 @@ namespace WpfDiagramDesigner
                 UMLReader.UmlReader.WriteOut(saveFileDialog.FileName);
         }
 
+        private void Aggregation_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.AGGREGATION;
+            DisableElements();
+            viewModel.CancelLineDraw();
+        }
+
+        private void Association_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.ASSOCIATION;
+            DisableElements();
+            viewModel.CancelLineDraw();
+        }
+
+        private void Composition_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.COMPOSITION;
+            DisableElements();
+            viewModel.CancelLineDraw();
+        }
+
+        private void Inheritance_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.INHERITANCE;
+            DisableElements();
+            viewModel.CancelLineDraw();
+        }
+
+        private void Dependency_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.DEPENDENCY;
+            DisableElements();
+            viewModel.CancelLineDraw();
+        }
+
+        private void Realization_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.REALIZATION;
+            DisableElements();
+            viewModel.CancelLineDraw();
+        }
+        private void OneWayAssociation_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.ONEWAYASSOCIATION;
+            DisableElements();
+            viewModel.CancelLineDraw();
+        }
+
+        private void DisableElements()
+        {
+            viewModel.DisableAll();
+        }
+
+        private void Normal_Click(object sender, RoutedEventArgs e)
+        {
+            RelationshipCreator.CurrentClickType = ClickType.NORMAL;
+            EnableElements();
+            viewModel.CancelLineDraw();
+
+        }
+
+        private void EnableElements()
+        {
+            viewModel.EnableAll();
+        }
     }
 }

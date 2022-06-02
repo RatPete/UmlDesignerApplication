@@ -10,13 +10,14 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfDiagramDesigner.Source.PRL.Helper;
 
 namespace WpfDiagramDesigner.UMLReader
 {
     public static class UmlReader
     {
         private static MetaDslx.Modeling.MutableModel model;
-        static PackageBuilder res;
+        private static int objectCounter = 0;
         public static string CreateFunctionText(OperationBuilder item)
         {
             string elementText = "";
@@ -57,21 +58,21 @@ namespace WpfDiagramDesigner.UMLReader
 
         public static void CreateClass()
         {
-           var newClass= UmlFactory.Class();
-            newClass.Name = "NewClass";
+            var newClass = UmlFactory.Class();
+            newClass.Name = "NewClass" + objectCounter++;
         }
 
         public static void CreateEnum()
         {
-            var newEnum=UmlFactory.Enumeration();
-            newEnum.Name = "NewEnum";
+            var newEnum = UmlFactory.Enumeration();
+            newEnum.Name = "NewEnum" + objectCounter++;
         }
 
         public static void CreateInterface()
         {
-            
-            var inter=UmlFactory.Interface();
-            inter.Name = "NewInterface";
+
+            var inter = UmlFactory.Interface();
+            inter.Name = "NewInterface" + objectCounter++;
         }
 
         public static string CreateAttributeText(PropertyBuilder item)
@@ -93,8 +94,10 @@ namespace WpfDiagramDesigner.UMLReader
             var g = new GraphLayout("dot");
             foreach (var cls in model.Objects.OfType<ClassBuilder>())
             {
+                if (cls.Name == null)
+                    continue;
                 var temp = g.AddNode(cls);
-                string longest = cls.Name==null? "temp":cls.Name;
+                string longest = cls.Name == null ? "temp" : cls.Name;
                 int maxLength = longest.Length;
                 foreach (var att in cls.OwnedAttribute)
                 {
@@ -114,31 +117,24 @@ namespace WpfDiagramDesigner.UMLReader
                 Size oneElementSize = FormatedTextSize(longest);
                 oneElementSize.Width += 10;
                 oneElementSize.Height *= preferedSize;
-                if (cls.OwnedAttribute.Count != 0)
-                {
-                    oneElementSize.Height += 3;
-                }
-                if (cls.OwnedOperation.Count != 0)
-                {
-                    oneElementSize.Height += 3;
-                }
-                if (cls.OwnedAttribute.Count != 0 || cls.OwnedOperation.Count != 0)
-                {
-                    oneElementSize.Height += 3;
-                }
+                oneElementSize.Height += 3;
+                oneElementSize.Height += 3;
+                oneElementSize.Height += 3;
                 Point2D prefSize = new Point2D(oneElementSize.Width, oneElementSize.Height);
                 temp.PreferredSize = prefSize;
             }
             foreach (var en in model.Objects.OfType<EnumerationBuilder>())
             {
+                if (en.Name == null)
+                    continue;
                 var temp = g.AddNode(en);
                 string longest = en.Name == null ? "temp" : en.Name;
                 int maxLength = longest.Length;
 
                 foreach (var att in en.OwnedLiteral)
                 {
-                    longest = maxLength < att.Name.Length ? att.Name : longest;
-                    maxLength = maxLength < att.Name.Length ? att.Name.Length : maxLength;
+                    longest = maxLength < att.Name?.Length ? att.Name : longest;
+                    maxLength = maxLength < att.Name?.Length ? att.Name.Length : maxLength;
                 }
                 Size oneElementSize = FormatedTextSize(longest);
                 oneElementSize.Width += 10;
@@ -161,7 +157,8 @@ namespace WpfDiagramDesigner.UMLReader
             }
             foreach (var intf in model.Objects.OfType<InterfaceBuilder>())
             {
-
+                if (intf.Name == null)
+                    continue;
                 var temp = g.AddNode(intf);
                 string longest = intf.Name == null ? "temp" : intf.Name;
                 int maxLength = longest.Length;
@@ -193,28 +190,33 @@ namespace WpfDiagramDesigner.UMLReader
             }
             foreach (var ir in model.Objects.OfType<InterfaceRealizationBuilder>())
             {
-                var first = ir.Client.FirstOrDefault().MName;
-                var second = ir.Supplier.FirstOrDefault().MName;
-                var resFirst = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == first).FirstOrDefault().NodeObject;
-                var resSecond = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second).FirstOrDefault()?.NodeObject;
+                var first = ir.Client.FirstOrDefault()?.MName;
+                var second = ir.Supplier.FirstOrDefault()?.MName;
+                var resFirst = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name?.ToString() == first).FirstOrDefault()?.NodeObject;
+                var resSecond = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name?.ToString() == second).FirstOrDefault()?.NodeObject;
                 g.AddEdge(resFirst, resSecond, ir);
             }
             foreach (var gen in model.Objects.OfType<GeneralizationBuilder>())
             {
-                var first = gen.Specific.Name;
-                var second = gen.General.Name;
-                var resFirst = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == first).FirstOrDefault()?.NodeObject;
-                var resSecond = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second).FirstOrDefault()?.NodeObject;
-                if (resFirst != null && resSecond != null && resFirst.Name.ToString() == first && resSecond.Name.ToString() == second)
+                var first = gen.Specific?.Name;
+                var second = gen.General?.Name;
+                var resFirst = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name?.ToString() == first).FirstOrDefault()?.NodeObject;
+                var resSecond = (NamedElementBuilder)g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name?.ToString() == second).FirstOrDefault()?.NodeObject;
+                if (resFirst != null && resSecond != null && resFirst?.Name.ToString() == first && resSecond?.Name?.ToString() == second)
                     g.AddEdge(resFirst, resSecond, gen);
 
             }
             foreach (var assoc in model.Objects.OfType<AssociationBuilder>())
             {
-                var first = assoc.MemberEnd[0].Type.Name;
-                var second = assoc.MemberEnd[1].Type.Name;
+                var first = "";
+                var second = "";
+
+                first = assoc.MemberEnd[0].Type?.Name;
+                second = assoc.MemberEnd[1].Type?.Name;
+
+
                 if (g.AllNodes.Any(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second) && g.AllNodes.Any(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == first))
-                    if (!(g.AllEdges.Any(i => ((NamedElementBuilder)i.Source.NodeObject).Name.ToString() == first && ((NamedElementBuilder)i.Source.NodeObject).Name.ToString() == second && i.EdgeObject is AssociationBuilder)))
+                    if (!g.AllEdges.Any(i => ((NamedElementBuilder)i.Source.NodeObject).Name.ToString() == first && ((NamedElementBuilder)i.Source.NodeObject).Name.ToString() == second && i.EdgeObject is AssociationBuilder))
                         g.AddEdge(g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second).FirstOrDefault().NodeObject, g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == first).FirstOrDefault().NodeObject, assoc);
             }
             foreach (var dep in model.Objects.OfType<DependencyBuilder>())
@@ -226,9 +228,9 @@ namespace WpfDiagramDesigner.UMLReader
                     continue;
 
                 }
-                if (!(g.AllEdges.Any(i => ((NamedElementBuilder)i.Source.NodeObject).Name.ToString() == second.Name && ((NamedElementBuilder)i.Target.NodeObject).Name.ToString() == first.Name && (i.EdgeObject is DependencyBuilder))))
-                    if (!(g.AllEdges.Any(i => ((NamedElementBuilder)i.Source.NodeObject).Name.ToString() == second.Name && ((NamedElementBuilder)i.Target.NodeObject).Name.ToString() == first.Name && (i.EdgeObject is InterfaceRealizationBuilder))))
-                        g.AddEdge(g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == second.Name).FirstOrDefault().NodeObject, g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject).Name.ToString() == first.Name).FirstOrDefault().NodeObject, dep);
+                if (!g.AllEdges.Any(i => ((NamedElementBuilder)i.Source.NodeObject)?.Name.ToString() == second?.Name && ((NamedElementBuilder)i.Target.NodeObject).Name.ToString() == first?.Name && (i.EdgeObject is DependencyBuilder)))
+                    if (!g.AllEdges.Any(i => ((NamedElementBuilder)i.Source.NodeObject)?.Name.ToString() == second?.Name && ((NamedElementBuilder)i.Target.NodeObject).Name.ToString() == first?.Name && (i.EdgeObject is InterfaceRealizationBuilder)))
+                        g.AddEdge(g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name.ToString() == second?.Name).FirstOrDefault().NodeObject, g.AllNodes.Where(i => ((NamedElementBuilder)i.NodeObject)?.Name.ToString() == first?.Name).FirstOrDefault().NodeObject, dep);
 
             }
             g.NodeSeparation = 30;
@@ -262,11 +264,7 @@ namespace WpfDiagramDesigner.UMLReader
         }
         public static void RemoveElementFromModel(ElementBuilder el)
         {
-            var alldeps = model.Objects.OfType<DependencyBuilder>().Where(i => i.Client.Contains(el) || i.Supplier.Contains(el));
-            foreach (var item in alldeps)
-            {
-                model.RemoveObject(item);
-            }
+
             var allInts = model.Objects.OfType<InterfaceRealizationBuilder>().Where(i => i.Client.Contains(el) || i.Supplier.Contains(el));
             foreach (var item in allInts)
             {
@@ -282,6 +280,21 @@ namespace WpfDiagramDesigner.UMLReader
             {
                 model.RemoveObject(item);
             }
+            var alldeps = model.Objects.OfType<DependencyBuilder>().Where(i => i.Client.Contains(el) || i.Supplier.Contains(el));
+            foreach (var item in alldeps)
+            {
+                model.RemoveObject(item);
+            }
+            var allProperties = model.Objects.OfType<PropertyBuilder>().Where(i => i.Type?.Name == ((NamedElementBuilder)el).Name);
+            foreach (var item in allProperties)
+            {
+                model.RemoveObject(item);
+            }
+            var allFunctions = model.Objects.OfType<ParameterBuilder>().Where(i => i.Type?.Name == ((NamedElementBuilder)el).Name);
+            foreach (var item in allFunctions)
+            {
+                model.RemoveObject(item);
+            }
             model.RemoveObject(el);
         }
 
@@ -290,11 +303,16 @@ namespace WpfDiagramDesigner.UMLReader
 
             UmlDescriptor.Initialize();
             string[] parts = inputURL.Split(".");
-
+            if (inputURL == "")
+            {
+                model = new MetaDslx.Modeling.MutableModel();
+                UmlFactory = new UmlFactory(model);
+                return null;
+            }
             if (parts[1].ToLower() == "uml")
             {
                 var umlSerializer = new WhiteStarUmlSerializer();
-                model = umlSerializer.ReadModelFromFile(inputURL,out var diagnostics).ToMutable();
+                model = umlSerializer.ReadModelFromFile(inputURL, out var diagnostics).ToMutable();
             }
             else
             {
@@ -302,9 +320,6 @@ namespace WpfDiagramDesigner.UMLReader
                 model = umlSerializer.ReadModelFromFile(inputURL).ToMutable();
             }
             UmlFactory = new UmlFactory(model);
-            var mod = model.Objects.OfType<PackageBuilder>();
-
-            res = mod.Where((i) => { return i.Name == "Logical View"; }).FirstOrDefault();
             return RefreshLayout();
         }
         public static void WriteOut(string output)
@@ -314,27 +329,21 @@ namespace WpfDiagramDesigner.UMLReader
         }
         public static TypeBuilder FindClassByName(string name)
         {
-            foreach (var cls in model.Objects.OfType<ClassBuilder>())
-                if (cls.Name.ToLower() == name.ToLower())
-                    return cls;
-            foreach (var enu in model.Objects.OfType<EnumerationBuilder>())
-            {
-                if (enu.Name.ToLower() == name.ToLower())
-                {
-                    return enu;
-                }
-            }
-            foreach (var inte in model.Objects.OfType<InterfaceBuilder>())
-            {
-                if (inte.Name.ToLower() == name.ToLower())
-                {
-                    return inte;
-                }
-            }
-            if (name.ToLower() == "void" || name == "" || name == null) return null;
+            if (name == null || name.ToLower() == "void" || name == "") return null;
+            var cls = FindClass(name);
+            if (cls != null)
+                return cls;
+            var enu = FindEnum(name);
+            if (enu != null)
+                return enu;
+            var inte = FindInterface(name);
+            if (inte != null)
+                return inte;
+
+
             var type = UmlFactory.Class();
             type.Name = name;
-            
+
 
 
             return type;
@@ -353,5 +362,145 @@ namespace WpfDiagramDesigner.UMLReader
         }
 
         public static UmlFactory UmlFactory { get; private set; }
+        private static ClassBuilder FindClass(string name)
+        {
+            foreach (var cls in model.Objects.OfType<ClassBuilder>())
+                if (cls.Name.ToLower() == name.ToLower())
+                    return cls;
+            return null;
+        }
+        private static EnumerationBuilder FindEnum(string name)
+        {
+            foreach (var enu in model.Objects.OfType<EnumerationBuilder>())
+            {
+                if (enu.Name.ToLower() == name.ToLower())
+                {
+                    return enu;
+                }
+            }
+            return null;
+        }
+        private static InterfaceBuilder FindInterface(string name)
+        {
+            foreach (var inte in model.Objects.OfType<InterfaceBuilder>())
+            {
+                if (inte.Name.ToLower() == name.ToLower())
+                {
+                    return inte;
+                }
+            }
+            return null;
+        }
+        public static void CreateOneWayAssociation(string startNode, string endNode)
+        {
+            CreateOneWayAssocWithEndReturn(startNode, endNode);
+        }
+
+        public static void CreateAssociation(string startNode, string endNode)
+        {
+            var assoc = UmlFactory.Association();
+
+            var cls1 = FindClass(startNode);
+            var cls2 = FindClass(endNode);
+            var any1 = FindClassByName(startNode);
+            var any2 = FindClassByName(endNode);
+            if (cls1 == null)
+                if (any1 != null)
+                    throw new ClassNotFoundException("Node1 not class");
+                else
+                    throw new ClassNotFoundException("Node1 does not exist error");
+            if (cls2 == null)
+                if (any2 != null)
+                    throw new ClassNotFoundException("Node2 not class");
+                else
+                    throw new ClassNotFoundException("Node2 does not exist error");
+            var end1 = UmlFactory.Property(); 
+            end1.Type = cls1;
+            var end2 = UmlFactory.Property(); 
+            end2.Type = cls2;
+
+            assoc.MemberEnd.Add(end1);
+            assoc.MemberEnd.Add(end2);
+            cls1.OwnedAttribute.Add(end2);
+            cls2.OwnedAttribute.Add(end1); 
+        }
+        public static void CreateAggregation(string startNode, string endNode)
+        {
+            var end2 = CreateOneWayAssocWithEndReturn(startNode, endNode);
+            end2.Aggregation = AggregationKind.Shared;
+        }
+        public static PropertyBuilder CreateOneWayAssocWithEndReturn(string startNode,string endNode)
+        {
+            var assoc = UmlFactory.Association();
+            var cls2 = FindClass(endNode);
+            var any1 = FindClassByName(startNode);
+            var any2 = FindClassByName(endNode);
+            if (cls2 == null)
+                if (any2 != null)
+                    throw new ClassNotFoundException("Node2 not class");
+                else
+                    throw new ClassNotFoundException("Node2 does not exist error");
+            if (any1 == null)
+                throw new ClassNotFoundException("Node2 does not exist error");
+            var end1 = UmlFactory.Property();
+            end1.Type = any1;
+            var end2 = UmlFactory.Property();
+            end2.Type = cls2;
+            assoc.OwnedEnd.Add(end2);
+            assoc.MemberEnd.Add(end1);
+            cls2.OwnedAttribute.Add(end1);
+            return end2;
+        }
+        public static void CreateComposition(string startNode, string endNode)
+        {
+            var end2 =CreateOneWayAssocWithEndReturn(startNode, endNode);
+            end2.Aggregation = AggregationKind.Composite;
+        }
+        public static void CreateInheritance(string startNode, string endNode)
+        {
+            var cls1 = FindClassByName(startNode);
+            var cls2 = FindClassByName(endNode);
+            if (cls1 == null || cls2 == null)
+            {
+                throw new ClassNotFoundException("Dependency creation not succesfull");
+            }
+            var rel = UmlFactory.InterfaceRealization();
+            rel.Client.Add(cls1);
+            rel.Supplier.Add(cls2);
+        }
+        public static void CreateRealization(string startNode, string endNode)
+        {
+            var cls1 = FindClass(startNode);
+            var cls2 = FindClass(endNode);
+            var any1 = FindClassByName(startNode);
+            var any2 = FindClassByName(endNode);
+            if (cls1 == null)
+                if (any1 != null)
+                    throw new ClassNotFoundException("Node1 not class");
+                else
+                    throw new ClassNotFoundException("Node1 does not exist error");
+            if (cls2 == null)
+                if (any2 != null)
+                    throw new ClassNotFoundException("Node2 not class");
+                else
+                    throw new ClassNotFoundException("Node2 does not exist error");
+
+            var rel = UmlFactory.Generalization();
+            cls1.Generalization.Add(rel);
+            rel.Specific = cls1;
+            rel.General = cls2;
+        }
+        public static void CreateDependency(string startNode, string endNode)
+        {
+            var cls1 = FindClassByName(startNode);
+            var cls2 = FindClassByName(endNode);
+            if (cls1 == null || cls2 == null)
+            {
+                throw new ClassNotFoundException("Dependency creation not succesfull");
+            }
+            var dep = UmlFactory.Dependency();
+            dep.Client.Add(cls1);
+            dep.Supplier.Add(cls2);
+        }
     }
 }

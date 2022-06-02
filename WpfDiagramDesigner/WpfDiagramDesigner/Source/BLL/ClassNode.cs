@@ -17,6 +17,49 @@ namespace WpfDiagramDesigner.Objects
         {
         }
 
+        public override void AddAttribute()
+        {
+            var attrib = UMLReader.UmlReader.CreateAttribute();
+            ((ClassBuilder)node.NodeObject).OwnedAttribute.Add(attrib);
+            var graphAttrib = NodeElementBuilder.AttributeBuilder(attrib, this, model);
+            Attributes.Add(graphAttrib);
+            attributePanel.Children.Add(graphAttrib);
+            model.Refresh();
+        }
+
+        public override void AddFunction()
+        {
+            var operation = UMLReader.UmlReader.CreateFuntion();
+            ((ClassBuilder)node.NodeObject).OwnedOperation.Add(operation);
+            var graphOperation = NodeElementBuilder.FunctionBuilder(operation, this, model);
+            Functions.Add(graphOperation);
+            functionPanel.Children.Add(graphOperation);
+            model.Refresh();
+        }
+
+        public override void AddLiteral()
+        {
+        }
+
+        public override void RemoveAttribute(TextBox item, PropertyBuilder attributeBuilder)
+        {
+            ((ClassBuilder)node.NodeObject).OwnedAttribute.Remove(attributeBuilder);
+            Attributes.Remove(item);
+            attributePanel.Children.Remove(item);
+        }
+
+        public override void RemoveFunction(TextBox item, OperationBuilder operationBuilder)
+        {
+            ((ClassBuilder)node.NodeObject).OwnedOperation.Remove(operationBuilder);
+            Functions.Remove(item);
+            functionPanel.Children.Remove(item);
+        }
+
+        public override void RemoveLiteral(TextBox item, EnumerationLiteralBuilder literal)
+        {
+           
+        }
+
         protected override void GenerateText()
         {
             var menuItem = new MenuItem
@@ -25,7 +68,11 @@ namespace WpfDiagramDesigner.Objects
             };
             menuItem.Click += (e, er) =>
             {
-                ((ClassBuilder)node.NodeObject).OwnedAttribute.Add(UMLReader.UmlReader.CreateAttribute());
+                var attrib = UMLReader.UmlReader.CreateAttribute();
+                ((ClassBuilder)node.NodeObject).OwnedAttribute.Add(attrib);
+                var graphAttrib=NodeElementBuilder.AttributeBuilder(attrib,this, model);
+                Attributes.Add(graphAttrib);
+                attributePanel.Children.Add(graphAttrib);
                 model.Refresh();
             };
             Name.ContextMenu.Items.Add(menuItem);
@@ -35,26 +82,40 @@ namespace WpfDiagramDesigner.Objects
             };
             menuItem.Click += (e, er) =>
             {
-                ((ClassBuilder)node.NodeObject).OwnedOperation.Add(UMLReader.UmlReader.CreateFuntion());
+                var operation = UMLReader.UmlReader.CreateFuntion();
+                ((ClassBuilder)node.NodeObject).OwnedOperation.Add(operation);
+                var graphOperation = NodeElementBuilder.FunctionBuilder(operation,this, model);
+                Functions.Add(graphOperation);
+                functionPanel.Children.Add(graphOperation);
                 model.Refresh();
             };
             Name.ContextMenu.Items.Add(menuItem);
 
             foreach (var item in ((ClassBuilder)node.NodeObject).OwnedAttribute)
             {
-                var tb = NodeElementBuilder.AttributeBuilder(item, model);
-                
+                var tb = NodeElementBuilder.AttributeBuilder(item,this, model);
                 Attributes.Add(tb);
                 
             }
             foreach (var item in ((ClassBuilder)node.NodeObject).OwnedOperation)
             {
 
-                var tb = NodeElementBuilder.FunctionBuilder(item, model);
+                var tb = NodeElementBuilder.FunctionBuilder(item,this, model);
 
                 Functions.Add(tb) ;
             }
 
+        }
+
+        protected override void RefreshAttributes()
+        {
+            if (Attributes.Count != ((ClassBuilder)(node.NodeObject)).OwnedAttribute.Count)
+            {
+                var graphAttrib = NodeElementBuilder.AttributeBuilder(((ClassBuilder)(node.NodeObject)).OwnedAttribute[((ClassBuilder)(node.NodeObject)).OwnedAttribute.Count-1], this, model);
+                graphAttrib.IsEnabled = false;
+                Attributes.Add(graphAttrib);
+                attributePanel.Children.Add(graphAttrib);
+            }
         }
     }
 }

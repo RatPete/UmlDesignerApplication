@@ -35,33 +35,46 @@
                               Header="Home">
                 <RibbonGroup x:Name="Group1" 
                                     Header="Group1">
+                    <RibbonButton x:Name="New_Diagram" SmallImageSource="/ic_folder_open_black_24dp.png" Label="New Diagram" Click="New_Diagram_Click"></RibbonButton>
                     <RibbonButton x:Name="Button1"
                                          Label="Save Button" SmallImageSource="/ic_folder_open_black_24dp.png" Click="Save_Click"/>
                     <RibbonButton x:Name="Button2"
                                          Label="Open Button" SmallImageSource="/ic_folder_open_black_24dp.png" Click="Open_Click"/>
-                    <RibbonButton x:Name="Button3"
-                                         Label="Button3" SmallImageSource="/ic_folder_open_black_24dp.png"/>
-                    <RibbonButton x:Name="Button4"
-                                         Label="Button4" SmallImageSource="/ic_folder_open_black_24dp.png"/>
+                    <RibbonButton x:Name="Aggregation"
+                                         Label="Aggregation" SmallImageSource="/aggregation.png" Click="Aggregation_Click"/>
+                    <RibbonButton x:Name="Association"
+                                         Label="Associtation" SmallImageSource="/assoc.png" Click="Association_Click"/>
+                    <RibbonButton x:Name="Composition"
+                                         Label="Composition" SmallImageSource="/composition.png" Click="Composition_Click"/>
+                    <RibbonButton x:Name="Dependency"
+                                         Label="Dependency" SmallImageSource="/dependency.png" Click="Dependency_Click"/>
+                    <RibbonButton x:Name="Inheritance"
+                                         Label="Inheritance" SmallImageSource="/inheritance.png" Click="Inheritance_Click"/>
+                    <RibbonButton x:Name="Realization"
+                                         Label="Realization" SmallImageSource="/realization.png" Click="Realization_Click"/>
+                    <RibbonButton x:Name="OneWayAssocitation"
+                                         Label="One way association" SmallImageSource="/assoc.png" Click="OneWayAssociation_Click"/>
+                    <RibbonButton x:Name="Normal"
+                                         Label="Normal" Click="Normal_Click"/>
                 </RibbonGroup>
             </RibbonTab>
             <RibbonTab x:Name="FormatTab" 
                               Header="Format">
                 <RibbonGroup x:Name="Group2" 
                                     Header="Group2">
-                    <RibbonButton x:Name="Button5"
-                                         Label="Button1" SmallImageSource="/ic_folder_open_black_24dp.png" />
-                    <RibbonButton x:Name="Button6"
-                                         Label="Button2" SmallImageSource="/ic_folder_open_black_24dp.png"/>
-                    <RibbonButton x:Name="Button7"
-                                         Label="Button3" SmallImageSource="/ic_folder_open_black_24dp.png"/>
                     <RibbonButton x:Name="Button8"
+                                         Label="Button1" SmallImageSource="/ic_folder_open_black_24dp.png" />
+                    <RibbonButton x:Name="Button9"
+                                         Label="Button2" SmallImageSource="/ic_folder_open_black_24dp.png"/>
+                    <RibbonButton x:Name="Button10"
+                                         Label="Button3" SmallImageSource="/ic_folder_open_black_24dp.png"/>
+                    <RibbonButton x:Name="Button11"
                                          Label="Button4" SmallImageSource="/ic_folder_open_black_24dp.png"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>
         <ScrollViewer Grid.Row="1" x:Name="viewer" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
-            <Canvas x:Name="canvas" Background="Transparent" ></Canvas>
+            <Canvas x:Name="canvas" Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ></Canvas>
         </ScrollViewer>
     </Grid>
 </Window>

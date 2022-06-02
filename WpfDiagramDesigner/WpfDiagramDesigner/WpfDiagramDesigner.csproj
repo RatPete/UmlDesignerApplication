@@ -8,6 +8,12 @@
 
   <ItemGroup>
     <None Remove="ic_folder_open_black_24dp.png" />
+    <None Remove="Resources\Images\aggregation.png" />
+    <None Remove="Resources\Images\assoc.PNG" />
+    <None Remove="Resources\Images\composition.PNG" />
+    <None Remove="Resources\Images\dependency.PNG" />
+    <None Remove="Resources\Images\inheritance.PNG" />
+    <None Remove="Resources\Images\realization.PNG" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,7 +25,29 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="aggregation.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="assoc.PNG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="composition.PNG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="dependency.PNG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="ic_folder_open_black_24dp.png" />
+    <Resource Include="inheritance.PNG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="realization.PNG">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\Images\" />
   </ItemGroup>
 
 </Project>
