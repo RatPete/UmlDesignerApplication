@@ -10,12 +10,48 @@
     <Compile Update="MainWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Source\PRL\Views\ConfirmDelete.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Source\PRL\Views\EditPrimitiveList.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Source\PRL\Views\ErrorPopup.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Source\PRL\Views\InfoPopup.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Source\PRL\Views\NewObjectCreatorView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Source\PRL\Views\NewTypeSelectorPopup.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Defaults.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Source\PRL\Views\ConfirmDelete.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Source\PRL\Views\EditPrimitiveList.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Source\PRL\Views\ErrorPopup.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Source\PRL\Views\InfoPopup.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Source\PRL\Views\NewObjectCreatorView.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Source\PRL\Views\NewTypeSelectorPopup.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

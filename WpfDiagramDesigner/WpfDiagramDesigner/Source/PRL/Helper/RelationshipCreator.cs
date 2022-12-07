@@ -1,18 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using WpfDiagramDesigner.Objects;
+using WpfDiagramDesigner.Source.PRL.Views;
 
 namespace WpfDiagramDesigner.Source.PRL.Helper
 {
     public static class RelationshipCreator
     {
-        private static ClickType currentClickType;
+        public static event PropertyChangedEventHandler StaticPropertyChanged;
+
+        private static void OnStaticPropertyChanged(string propertyName)
+        {
+            StaticPropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private static ClickType currentClickType=ClickType.NORMAL;
         private static string startNode = "";
         private static string endNode = "";
+
         public static ClickType CurrentClickType
         {
             set
@@ -20,7 +30,12 @@ namespace WpfDiagramDesigner.Source.PRL.Helper
                 if (currentClickType != value)
                 {
                     currentClickType = value; startNode = ""; endNode = "";
+                    OnStaticPropertyChanged("CurrentClickType");
                 }
+            }
+            get
+            {
+                return currentClickType;
             }
         }
         public static bool NodeClicked(string clickedNode)
@@ -49,9 +64,10 @@ namespace WpfDiagramDesigner.Source.PRL.Helper
                     }
                     startNode = ""; endNode = "";
                 }
-                catch (ClassNotFoundException)
+                catch (ClassNotFoundException ex)
                 {
-
+                    InfoPopup popup = new InfoPopup(ex.Message,PopupGlobalPosition.Position);
+                    popup.ShowDialog();
                     startNode = "";
                 }
                 return false;

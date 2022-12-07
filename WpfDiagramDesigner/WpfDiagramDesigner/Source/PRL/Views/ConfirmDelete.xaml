@@ -1,0 +1,21 @@
+﻿<Window x:Class="WpfDiagramDesigner.Source.PRL.Views.ConfirmDelete"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfDiagramDesigner.Source.PRL.Views"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        SizeToContent="WidthAndHeight"
+        Title="ConfirmDelete"  DataContext="{Binding ViewModel}" x:Name="ConfirmDeleteView" >
+
+    <StackPanel>
+        <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="auto">
+            <TextBlock Text="{Binding ErrorDescription}" Width="260" TextWrapping="Wrap" />
+        </ScrollViewer>
+        <DockPanel Width="260">
+            <Button DockPanel.Dock="Left" Width="100" Content="Visszavonás" Click="RejectButton_Click" Margin="20,0,20,0"/>
+            <Button DockPanel.Dock="Right" Width="100" Margin="0,0,20,0" Content="Megerősítés" Click="FixButton_Click" />
+        </DockPanel>
+    </StackPanel>
+</Window>

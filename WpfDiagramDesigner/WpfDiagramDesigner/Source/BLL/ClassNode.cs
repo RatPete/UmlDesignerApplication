@@ -7,13 +7,14 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using WpfDiagramDesigner.Source.PRL.Helper;
 using WpfDiagramDesigner.Views;
 
 namespace WpfDiagramDesigner.Objects
 {
     class ClassNode : Node
     {
-        public ClassNode(NodeLayout node, ViewModel.IRefreshable model) : base(node,model)
+        public ClassNode(NodeLayout node, ViewModel.IRefreshable model) : base(node, model)
         {
         }
 
@@ -44,8 +45,10 @@ namespace WpfDiagramDesigner.Objects
         public override void RemoveAttribute(TextBox item, PropertyBuilder attributeBuilder)
         {
             ((ClassBuilder)node.NodeObject).OwnedAttribute.Remove(attributeBuilder);
+            UMLReader.UmlReader.RemoveElementFromModel(attributeBuilder);
             Attributes.Remove(item);
             attributePanel.Children.Remove(item);
+            model.Refresh();
         }
 
         public override void RemoveFunction(TextBox item, OperationBuilder operationBuilder)
@@ -53,11 +56,12 @@ namespace WpfDiagramDesigner.Objects
             ((ClassBuilder)node.NodeObject).OwnedOperation.Remove(operationBuilder);
             Functions.Remove(item);
             functionPanel.Children.Remove(item);
+            model.Refresh();
         }
 
         public override void RemoveLiteral(TextBox item, EnumerationLiteralBuilder literal)
         {
-           
+
         }
 
         protected override void GenerateText()
@@ -70,7 +74,7 @@ namespace WpfDiagramDesigner.Objects
             {
                 var attrib = UMLReader.UmlReader.CreateAttribute();
                 ((ClassBuilder)node.NodeObject).OwnedAttribute.Add(attrib);
-                var graphAttrib=NodeElementBuilder.AttributeBuilder(attrib,this, model);
+                var graphAttrib = NodeElementBuilder.AttributeBuilder(attrib, this, model);
                 Attributes.Add(graphAttrib);
                 attributePanel.Children.Add(graphAttrib);
                 model.Refresh();
@@ -84,7 +88,7 @@ namespace WpfDiagramDesigner.Objects
             {
                 var operation = UMLReader.UmlReader.CreateFuntion();
                 ((ClassBuilder)node.NodeObject).OwnedOperation.Add(operation);
-                var graphOperation = NodeElementBuilder.FunctionBuilder(operation,this, model);
+                var graphOperation = NodeElementBuilder.FunctionBuilder(operation, this, model);
                 Functions.Add(graphOperation);
                 functionPanel.Children.Add(graphOperation);
                 model.Refresh();
@@ -93,28 +97,56 @@ namespace WpfDiagramDesigner.Objects
 
             foreach (var item in ((ClassBuilder)node.NodeObject).OwnedAttribute)
             {
-                var tb = NodeElementBuilder.AttributeBuilder(item,this, model);
+                var tb = NodeElementBuilder.AttributeBuilder(item, this, model);
                 Attributes.Add(tb);
-                
+
             }
             foreach (var item in ((ClassBuilder)node.NodeObject).OwnedOperation)
             {
 
-                var tb = NodeElementBuilder.FunctionBuilder(item,this, model);
+                var tb = NodeElementBuilder.FunctionBuilder(item, this, model);
 
-                Functions.Add(tb) ;
+                Functions.Add(tb);
             }
 
         }
 
         protected override void RefreshAttributes()
         {
-            if (Attributes.Count != ((ClassBuilder)(node.NodeObject)).OwnedAttribute.Count)
+
+            if (((ClassBuilder)(node.NodeObject)).OwnedAttribute.Contains(null))
             {
-                var graphAttrib = NodeElementBuilder.AttributeBuilder(((ClassBuilder)(node.NodeObject)).OwnedAttribute[((ClassBuilder)(node.NodeObject)).OwnedAttribute.Count-1], this, model);
-                graphAttrib.IsEnabled = false;
+                ((ClassBuilder)(node.NodeObject)).OwnedAttribute.Remove(null);
+            }
+            Attributes.Clear();
+            attributePanel.Children.Clear();
+            foreach (var item in ((ClassBuilder)(node.NodeObject)).OwnedAttribute)
+            {
+                var graphAttrib = NodeElementBuilder.AttributeBuilder(item, this, model);
+                graphAttrib.IsEnabled = RelationshipCreator.CurrentClickType == ClickType.NORMAL;
                 Attributes.Add(graphAttrib);
                 attributePanel.Children.Add(graphAttrib);
+            }
+
+
+        }
+
+        protected override void RefreshEnums()
+        {
+        }
+
+        protected override void RefreshFunctions()
+        {
+
+            Functions.Clear();
+            functionPanel.Children.Clear();
+            foreach (var item in ((ClassBuilder)(node.NodeObject)).OwnedOperation)
+            {
+                var graphAttrib = NodeElementBuilder.FunctionBuilder(item, this, model);
+                graphAttrib.IsEnabled = RelationshipCreator.CurrentClickType == ClickType.NORMAL;
+                Functions.Add(graphAttrib);
+                functionPanel.Children.Add(graphAttrib);
+
             }
         }
     }

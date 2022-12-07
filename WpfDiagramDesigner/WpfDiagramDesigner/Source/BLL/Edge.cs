@@ -19,9 +19,11 @@ namespace WpfDiagramDesigner.Objects
         protected EdgeGraphicData GraphicData;
 
         public string Id { get { return Data.MId.ToString(); } }
+        private ViewModel.IRefreshable model;
 
-        public Edge(EdgeLayout edge)
+        public Edge(EdgeLayout edge, ViewModel.IRefreshable model)
         {
+            this.model = model;
             Data = (RelationshipBuilder)edge.EdgeObject;
             var data = Data.MId;
             GraphicData = new EdgeGraphicData();
@@ -43,6 +45,7 @@ namespace WpfDiagramDesigner.Objects
         protected abstract Path CreateHead(Point e, Point d);
         private List<BezierSegment> Segments = new List<BezierSegment>();
         Path pathLine;
+        Path extraPathLine;
         protected Path headPath;
         Canvas canvas;
         public virtual void Draw(Canvas canvas)
@@ -105,10 +108,30 @@ namespace WpfDiagramDesigner.Objects
             {
                 StrokeDashArray = new DoubleCollection() { 6, 1 },
                 Data = path,
-                Stroke = Brushes.Black
+                Stroke = Brushes.Black,
             };
             SetLineStyle(pathLine);
+            // pathLine.ContextMenu.Items.Clear();
+            extraPathLine = new Path
+            {
+                StrokeDashArray = new DoubleCollection() { 6, 1 },
+                Data = path,
+                Stroke = Brushes.Transparent,
+                StrokeThickness = 5
+            };
+
+            extraPathLine.ContextMenu = new ContextMenu();
+
+
+            var menuitem = new MenuItem();
+            menuitem.Header = "Remove";
+            menuitem.Click += (e, er) =>
+            {
+                model.RemoveElement(Data); model.Refresh();
+            };
+            extraPathLine.ContextMenu.Items.Add(menuitem);
             canvas.Children.Add(pathLine);
+            canvas.Children.Add(extraPathLine);
         }
         protected virtual void SetLineStyle(Path pathLine)
         {
@@ -145,6 +168,7 @@ namespace WpfDiagramDesigner.Objects
             }
             List<BezierSegment> segments = new List<BezierSegment>();
             Point startPoint = graphdata.SplinePoints[0][0];
+            Point newLastPoint;
             for (int j = 0; j < graphdata.SplinePoints.Length; j++)
             {
                 var spline = graphdata.SplinePoints[j];
@@ -156,7 +180,7 @@ namespace WpfDiagramDesigner.Objects
                     if (i + 3 >= spline.Length)
                     {
 
-                        Point newLastPoint = new Point();
+                        newLastPoint = new Point();
                         if (lastPoint.Y - secondLastPoint.Y > 0)
                             newLastPoint.Y = lastPoint.Y - 3;
                         else if (lastPoint.Y - secondLastPoint.Y == 0)
@@ -183,16 +207,27 @@ namespace WpfDiagramDesigner.Objects
                 }
 
             }
-
+            int differenceOfSegments = 0;
             if (segments.Count > Segments.Count)
             {
+
                 ExpandEdgeParts(segments.Count - Segments.Count);
             }
             else if (segments.Count < Segments.Count)
             {
-                for (int j = 0; j < Segments.Count - segments.Count; j++)
+                differenceOfSegments = Segments.Count - segments.Count;
+                for (int j = 0; j < differenceOfSegments; j++)
                 {
-                    segments.Add(segments[segments.Count - 1]);
+                    int count = ((PathGeometry)pathLine.Data).Figures[0].Segments.Count;
+                    ((PathGeometry)pathLine.Data).Figures[0].Segments.RemoveAt(count - 1);
+                    Segments.RemoveAt(count - 1);
+
+                    //}
+                    //for (int j = 0; j < Segments.Count - segments.Count; j++)
+                    //{
+
+                    //    segments.Add(segments[segments.Count - 1]);
+                    //}
                 }
             }
 
@@ -225,31 +260,75 @@ namespace WpfDiagramDesigner.Objects
                 Storyboard.SetTarget(animation2, pathLine);
                 Storyboard.SetTargetProperty(animation2, new PropertyPath($"Data.Figures[0].Segments[{i}].Point2"));
                 storyboard.Children.Add(animation2);
-                PointAnimation animation3 = new PointAnimation
+                if (i == segments.Count - 1)
                 {
-                    From = Segments[i].Point3,
-                    To = new Point(segments[i].Point3.X, segments[i].Point3.Y),
-                    Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
-                };
-                Storyboard.SetTarget(animation3, pathLine);
-                Storyboard.SetTargetProperty(animation3, new PropertyPath($"Data.Figures[0].Segments[{i}].Point3"));
-                storyboard.Children.Add(animation3);
+                    PointAnimation animation3 = new PointAnimation
+                    {
+                        From = Segments[i].Point3,
+                        To = newLastPoint,
+                        Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+                    };
+                    Storyboard.SetTarget(animation3, pathLine);
+                    Storyboard.SetTargetProperty(animation3, new PropertyPath($"Data.Figures[0].Segments[{i}].Point3"));
+                    storyboard.Children.Add(animation3);
+                }
+                else
+                {
+                    PointAnimation animation3 = new PointAnimation
+                    {
+                        From = Segments[i].Point3,
+                        To = new Point(segments[i].Point3.X, segments[i].Point3.Y),
+                        Duration = new System.Windows.Duration(TimeSpan.FromSeconds(2))
+                    };
+                    Storyboard.SetTarget(animation3, pathLine);
+                    Storyboard.SetTargetProperty(animation3, new PropertyPath($"Data.Figures[0].Segments[{i}].Point3"));
+                    storyboard.Children.Add(animation3);
+                }
             }
+            storyboard.Completed += (e, er) =>
+            {
+                if (extraPathLine != null)
+                {
+                    canvas.Children.Remove(extraPathLine);
+                    extraPathLine = new Path
+                    {
+                        StrokeDashArray = new DoubleCollection() { 6, 1 },
+                        Data = pathLine.Data,
+                        Stroke = Brushes.Transparent,
+                        StrokeThickness = 5
+                    };
+                    extraPathLine.ContextMenu = new ContextMenu();
+                    var menuitem = new MenuItem();
+                    menuitem.Header = "Remove";
+                    menuitem.Click += (e, er) =>
+                    {
+                        model.RemoveElement(Data); model.Refresh();
+                    };
 
+                    extraPathLine.ContextMenu.Items.Add(menuitem);
+                    canvas.Children.Add(extraPathLine);
+
+                }
+            };
             Segments = segments;
 
         }
         private void ExpandEdgeParts(int increaseBy)
         {
             canvas.Children.Remove(pathLine);
+            canvas.Children.Remove(extraPathLine);
             for (int i = 0; i < increaseBy; i++)
             {
-                Segments.Add(Segments[Segments.Count - 1]);
+                var segment = Segments[Segments.Count - 1];
+                Segments.Add(new BezierSegment(segment.Point3, segment.Point3, segment.Point3,true));
             }
             PathGeometry path = new PathGeometry();
-            PathFigure figure = new PathFigure();
-            figure.IsClosed = false;
-            figure.StartPoint = Segments[0].Point1;
+            PathFigure figure = new PathFigure
+            {
+                IsClosed = false,
+                StartPoint = ((PathGeometry)pathLine.Data).Figures[0].StartPoint
+            };
+            
             foreach (var segment in Segments)
             {
 
@@ -263,7 +342,25 @@ namespace WpfDiagramDesigner.Objects
                 Stroke = Brushes.Black
             };
             SetLineStyle(pathLine);
+            extraPathLine = new Path
+            {
+                StrokeDashArray = new DoubleCollection() { 6, 1 },
+                Data = path,
+                Stroke = Brushes.Transparent,
+                StrokeThickness = 5
+            };
+
+            extraPathLine.ContextMenu = new ContextMenu();
+            var menuitem = new MenuItem();
+            menuitem.Header = "Remove";
+            menuitem.Click += (e, er) =>
+            {
+                model.RemoveElement(Data); model.Refresh();
+            };
+
+            extraPathLine.ContextMenu.Items.Add(menuitem);
             canvas.Children.Add(pathLine);
+            canvas.Children.Add(extraPathLine);
         }
 
         public void RemoveFromCanvas(Canvas canvas)
@@ -271,6 +368,10 @@ namespace WpfDiagramDesigner.Objects
             if (canvas.Children.Contains(pathLine))
             {
                 canvas.Children.Remove(pathLine);
+            }
+            if (canvas.Children.Contains(extraPathLine))
+            {
+                canvas.Children.Remove(extraPathLine);
             }
             if (canvas.Children.Contains(headPath))
             {

@@ -13,7 +13,7 @@ namespace WpfDiagramDesigner.Objects
 {
     class AssociationEdge : Edge
     {
-        public AssociationEdge(EdgeLayout edge) : base(edge)
+        public AssociationEdge(EdgeLayout edge, ViewModel.IRefreshable model) : base(edge, model)
         {
             
         }

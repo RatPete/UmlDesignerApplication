@@ -12,7 +12,7 @@ namespace WpfDiagramDesigner.Objects
 {
     class GeneralizationEdge : Edge
     {
-        public GeneralizationEdge(EdgeLayout edge) : base(edge)
+        public GeneralizationEdge(EdgeLayout edge, ViewModel.IRefreshable model) : base(edge, model)
         {
         }
 

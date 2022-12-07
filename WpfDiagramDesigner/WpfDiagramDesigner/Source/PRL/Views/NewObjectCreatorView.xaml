@@ -1,0 +1,169 @@
+﻿<Window x:Class="WpfDiagramDesigner.Source.PRL.Views.NewObjectCreatorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfDiagramDesigner.Source.PRL.Views"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        Title="Window1" MinHeight="200" MinWidth="400" DataContext="{Binding ViewModel}" MaxHeight="330" x:Name="CreatorView">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <DockPanel Grid.Row="0" HorizontalAlignment="Stretch">
+            <TextBlock DockPanel.Dock="Left"  Text="Név:" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox  DockPanel.Dock="Left" HorizontalContentAlignment="Stretch" Grid.Column="1" Text="{Binding NewObjectName, Mode=TwoWay}" LostFocus="TextBox_LostFocus"/>
+        </DockPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.ColumnSpan="2">
+            <TextBlock Text="Attribútumok:" Grid.Row="1" Grid.ColumnSpan="2">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path= CreatorType}" Value="CLASS">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <Button Name="AttributeAdd" Margin="10,0,0,0" Click="Button_Click" Content="+">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path= CreatorType}" Value="CLASS">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+
+        <ListBox Grid.Row="2" MinHeight="30" ItemsSource="{Binding AttribPanel}" HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch" MaxHeight="100">
+            <ListBox.Style>
+                <Style TargetType="ListBox">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path= CreatorType}" Value="CLASS">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.Style>
+        </ListBox>
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="2">
+            <TextBlock Text="Függvények" >
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding  Path= CreatorType}" Value="CLASS">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path= CreatorType}" Value="INTERFACE">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <Button Name="FunctionAdd" Margin="10,0,0,0"  Click="Button_Click" Content="+">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path= CreatorType}" Value="CLASS">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding Path= CreatorType}" Value="INTERFACE">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+        <ListBox Grid.Row="4" Grid.ColumnSpan="2" VerticalContentAlignment="Stretch"  HorizontalContentAlignment="Stretch" ItemsSource="{Binding FunPanel}" MinHeight="30" MaxHeight="100">
+            <ListBox.Style>
+                <Style TargetType="ListBox">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Path= CreatorType}" Value="CLASS">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding Path= CreatorType}" Value="INTERFACE">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.Style>
+        </ListBox>
+        <StackPanel Orientation="Horizontal" Grid.Row="5" Grid.ColumnSpan="2">
+            <TextBlock Text="Literálok" >
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding CreatorType, Mode=TwoWay}" Value="ENUMERATION">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <Button Name="LiteralAdd" Margin="10,0,0,0" Click="Button_Click" Content="+">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Path= CreatorType}" Value="ENUMERATION">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+        </StackPanel>
+        <ListBox Grid.Row="6" Grid.ColumnSpan="2" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch"  MinHeight="30" ItemsSource="{Binding EnumPanel, Mode=TwoWay}" MaxHeight="100" >
+            <ListBox.Style>
+                <Style TargetType="ListBox">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding  CreatorType, Mode=TwoWay}" Value="ENUMERATION">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.Style>
+        </ListBox>
+        <Grid Grid.Row="7">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.5*"/>
+                <ColumnDefinition Width="0.5*"/>
+            </Grid.ColumnDefinitions>
+            <Button Click="SaveInstance" Grid.Column="1">
+                Létrehozás
+            </Button>
+            <Button  Click="Cancel" Grid.Column="3">
+                Mégsem
+            </Button>
+        </Grid>
+    </Grid>
+</Window>

@@ -8,13 +8,14 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using WpfDiagramDesigner.Source.PRL.Helper;
 using WpfDiagramDesigner.Views;
 
 namespace WpfDiagramDesigner.Objects
 {
     class InterfaceNode : Node
     {
-        public InterfaceNode(NodeLayout node, ViewModel.IRefreshable model) : base( node,model)
+        public InterfaceNode(NodeLayout node, ViewModel.IRefreshable model) : base(node, model)
         {
         }
 
@@ -26,7 +27,7 @@ namespace WpfDiagramDesigner.Objects
         public override void AddFunction()
         {
             var operation = UMLReader.UmlReader.CreateFuntion();
-            ((InteractionBuilder)node.NodeObject).OwnedOperation.Add(operation);
+            ((InterfaceBuilder)node.NodeObject).OwnedOperation.Add(operation);
             var graphOperation = NodeElementBuilder.FunctionBuilder(operation, this, model);
             Functions.Add(graphOperation);
             functionPanel.Children.Add(graphOperation);
@@ -40,7 +41,7 @@ namespace WpfDiagramDesigner.Objects
 
         public override void RemoveAttribute(TextBox item, PropertyBuilder attributeBuilder)
         {
-        
+
         }
 
         public override void RemoveFunction(TextBox item, OperationBuilder operationBuilder)
@@ -64,8 +65,8 @@ namespace WpfDiagramDesigner.Objects
             {
                 var function = UMLReader.UmlReader.CreateFuntion();
                 ((InterfaceBuilder)node.NodeObject).OwnedOperation.Add(function);
-                var graphicalFunction = NodeElementBuilder.FunctionBuilder(function,this, model);
-                
+                var graphicalFunction = NodeElementBuilder.FunctionBuilder(function, this, model);
+
                 Functions.Add(graphicalFunction);
                 functionPanel.Children.Add(graphicalFunction);
                 model.Refresh();
@@ -74,14 +75,34 @@ namespace WpfDiagramDesigner.Objects
             foreach (var item in ((InterfaceBuilder)node.NodeObject).OwnedOperation)
             {
 
-                var tb = NodeElementBuilder.FunctionBuilder(item,this, model);
+                var tb = NodeElementBuilder.FunctionBuilder(item, this, model);
                 Functions.Add(tb);
             }
+            Name.FontStyle = FontStyles.Italic;
 
         }
 
         protected override void RefreshAttributes()
         {
+        }
+
+        protected override void RefreshEnums()
+        {
+        }
+
+        protected override void RefreshFunctions()
+        {
+            Functions.Clear();
+            functionPanel.Children.Clear();
+            foreach (var item in ((InterfaceBuilder)(node.NodeObject)).OwnedOperation)
+            {
+                var graphAttrib = NodeElementBuilder.FunctionBuilder(item, this, model);
+                graphAttrib.IsEnabled = RelationshipCreator.CurrentClickType == ClickType.NORMAL;
+                Functions.Add(graphAttrib);
+                functionPanel.Children.Add(graphAttrib);
+            }
+
+
         }
     }
 }

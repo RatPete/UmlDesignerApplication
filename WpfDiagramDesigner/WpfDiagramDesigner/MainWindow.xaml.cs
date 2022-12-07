@@ -20,6 +20,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfDiagramDesigner.Objects;
 using WpfDiagramDesigner.Source.PRL.Helper;
+using WpfDiagramDesigner.Source.PRL.Views;
 using WpfDiagramDesigner.UMLReader;
 using WpfDiagramDesigner.ViewModel;
 
@@ -34,6 +35,17 @@ namespace WpfDiagramDesigner
         public MainWindow()
         {
             InitializeComponent();
+            PopupGlobalPosition.Position = new Point(this.Left + this.Width / 2.0, this.Top + this.Height / 4.0);
+        }
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+            PopupGlobalPosition.Position = new Point(this.Left + sizeInfo.NewSize.Width / 2.0, this.Top + sizeInfo.NewSize.Height / 4.0);
+        }
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            base.OnLocationChanged(e);
+            PopupGlobalPosition.Position = new Point(this.Left + this.Width / 2.0, this.Top + this.Height / 4.0);
         }
 
         private void Open_Click(object sender, RoutedEventArgs e)
@@ -42,15 +54,17 @@ namespace WpfDiagramDesigner
             openFileDialog.Filter = "UML file (*.uml)|*.uml|XMI file (*.xmi)|*.xmi";
             if (openFileDialog.ShowDialog() == true)
             {
-                viewModel = new MainViewModel(canvas);
+                canvas.Children.Clear();
+                viewModel = new MainViewModel(canvas, this);
                 viewModel.InitDiagram(openFileDialog.FileName);
                 viewModel.DrawAll();
             }
-                
+
         }
-        private void New_Diagram_Click(object sender,RoutedEventArgs e)
+        private void New_Diagram_Click(object sender, RoutedEventArgs e)
         {
-            viewModel = new MainViewModel(canvas);
+            viewModel = new MainViewModel(canvas, this);
+            canvas.Children.Clear();
             viewModel.InitDiagram("");
             viewModel.DrawAll();
         }
@@ -61,53 +75,128 @@ namespace WpfDiagramDesigner
             if (saveFileDialog.ShowDialog() == true)
                 UMLReader.UmlReader.WriteOut(saveFileDialog.FileName);
         }
-
+        private void SetRelationShipType(ClickType click)
+        {
+            if (viewModel != null)
+            {
+                RelationshipCreator.CurrentClickType = RelationshipCreator.CurrentClickType == click && click != ClickType.NORMAL ? ClickType.NORMAL : click;
+                if (RelationshipCreator.CurrentClickType != ClickType.NORMAL)
+                {
+                    DisableElements();
+                    viewModel.CancelLineDraw();
+                }
+                else
+                {
+                    EnableElements();
+                    viewModel.CancelLineDraw();
+                }
+            }
+            else
+            {
+                InfoPopup popup = new InfoPopup("Ahhoz hogy kapcsolatot tudj hozzáadni, először nyiss meg egy diagrammot", PopupGlobalPosition.Position);
+                popup.ShowDialog();
+            }
+        }
         private void Aggregation_Click(object sender, RoutedEventArgs e)
         {
-            RelationshipCreator.CurrentClickType = ClickType.AGGREGATION;
-            DisableElements();
-            viewModel.CancelLineDraw();
+
+            SetRelationShipType(ClickType.AGGREGATION);
+
         }
 
         private void Association_Click(object sender, RoutedEventArgs e)
         {
-            RelationshipCreator.CurrentClickType = ClickType.ASSOCIATION;
-            DisableElements();
-            viewModel.CancelLineDraw();
+            SetRelationShipType(ClickType.ASSOCIATION);
+
         }
 
         private void Composition_Click(object sender, RoutedEventArgs e)
         {
-            RelationshipCreator.CurrentClickType = ClickType.COMPOSITION;
-            DisableElements();
-            viewModel.CancelLineDraw();
+            SetRelationShipType(ClickType.COMPOSITION);
+
         }
 
         private void Inheritance_Click(object sender, RoutedEventArgs e)
         {
-            RelationshipCreator.CurrentClickType = ClickType.INHERITANCE;
-            DisableElements();
-            viewModel.CancelLineDraw();
+            SetRelationShipType(ClickType.INHERITANCE);
+
         }
 
         private void Dependency_Click(object sender, RoutedEventArgs e)
         {
-            RelationshipCreator.CurrentClickType = ClickType.DEPENDENCY;
-            DisableElements();
-            viewModel.CancelLineDraw();
+            SetRelationShipType(ClickType.DEPENDENCY);
+
         }
 
         private void Realization_Click(object sender, RoutedEventArgs e)
         {
-            RelationshipCreator.CurrentClickType = ClickType.REALIZATION;
-            DisableElements();
-            viewModel.CancelLineDraw();
+            SetRelationShipType(ClickType.REALIZATION);
+
         }
         private void OneWayAssociation_Click(object sender, RoutedEventArgs e)
         {
-            RelationshipCreator.CurrentClickType = ClickType.ONEWAYASSOCIATION;
-            DisableElements();
-            viewModel.CancelLineDraw();
+            SetRelationShipType(ClickType.ONEWAYASSOCIATION);
+
+        }
+        private void NewClass_Click(object sender, RoutedEventArgs e)
+        {
+            if (viewModel != null)
+            {
+                NewObjectCreatorView view = new NewObjectCreatorView(ObjectType.CLASS,this.ActualWidth);
+                view.ShowDialog();
+
+                viewModel.Refresh();
+            }
+            else
+            {
+                InfoPopup popup = new InfoPopup("Ahhoz hogy új osztály adj hozzá, először hozz létre vagy nyiss meg egy diagrammot", PopupGlobalPosition.Position);
+                popup.ShowDialog();
+            }
+
+        }
+        private void NewInterface_Click(object sender, RoutedEventArgs e)
+        {
+            if (viewModel != null)
+            {
+                NewObjectCreatorView view = new NewObjectCreatorView(ObjectType.INTERFACE, this.ActualWidth);
+                view.ShowDialog();
+                viewModel.Refresh();
+            }
+
+            else
+            {
+                InfoPopup popup = new InfoPopup("Ahhoz hogy új interfészt adj hozzá, először hozz létre vagy nyiss meg egy diagrammot", PopupGlobalPosition.Position);
+                popup.ShowDialog();
+            }
+        }
+        private void NewEnum_Click(object sender, RoutedEventArgs e)
+        {
+            if (viewModel != null)
+            {
+                NewObjectCreatorView view = new NewObjectCreatorView(ObjectType.ENUMERATION, this.ActualWidth);
+                view.ShowDialog();
+                viewModel.Refresh();
+            }
+            else
+            {
+                InfoPopup popup = new InfoPopup("Ahhoz hogy új enumerációt adj hozzá, először hozz létre vagy nyiss meg egy diagrammot", PopupGlobalPosition.Position);
+                popup.ShowDialog();
+            }
+        }
+        private void Edit_Primitive_Click(object sender, RoutedEventArgs e)
+        {
+            if (viewModel != null)
+            {
+                EditPrimitiveList view = new EditPrimitiveList();
+                view.ShowDialog();
+                viewModel.Refresh();
+            }
+
+            else
+            {
+                InfoPopup popup = new InfoPopup("Ahhoz hogy a primitív típus listát módosítsd, először hozz létre vagy nyiss meg egy diagrammot", PopupGlobalPosition.Position);
+                popup.ShowDialog();
+            }
         }
 
         private void DisableElements()
@@ -117,9 +206,7 @@ namespace WpfDiagramDesigner
 
         private void Normal_Click(object sender, RoutedEventArgs e)
         {
-            RelationshipCreator.CurrentClickType = ClickType.NORMAL;
-            EnableElements();
-            viewModel.CancelLineDraw();
+            SetRelationShipType(ClickType.NORMAL);
 
         }
 

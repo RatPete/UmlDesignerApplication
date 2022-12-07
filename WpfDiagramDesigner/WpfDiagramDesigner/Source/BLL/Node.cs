@@ -3,6 +3,7 @@ using MetaDslx.Languages.Uml.Model;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,6 +13,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using WpfDiagramDesigner.Source.PRL.Helper;
 using WpfDiagramDesigner.Source.PRL.ViewModel;
+using WpfDiagramDesigner.Source.PRL.Views;
 using WpfDiagramDesigner.ViewModel;
 using WpfDiagramDesigner.Views;
 
@@ -114,6 +116,7 @@ namespace WpfDiagramDesigner.Objects
             attributePanel.Background = Brushes.LightYellow;
             Canvas.SetLeft(border, node.Position.X - node.Width / 2);
             Canvas.SetTop(border, node.Position.Y - node.Height / 2);
+            Canvas.SetZIndex(border, 100);
             currentPosition.X = node.Position.X - node.Width / 2;
             currentPosition.Y = node.Position.Y - node.Height / 2;
             attributePanel.MouseLeftButtonDown += Border_MouseLeftButtonDown;
@@ -163,11 +166,12 @@ namespace WpfDiagramDesigner.Objects
             var name = ((NamedElementBuilder)node.NodeObject).Name;
             Name = new TextBox();
             GenerateNameBox(Name);
-            Name.LostFocus += (e, er) =>
-             {
-                 InlineParser.NameParser(Name.Text, (NamedElementBuilder)node.NodeObject);
-                 GenerateNameBox(Name);
-             };
+            RoutedEventHandler p = (e, er) =>
+                            {
+                                InlineParser.NameParser(Name.Text, (NamedElementBuilder)node.NodeObject);
+                                GenerateNameBox(Name);
+                            };
+            Name.LostFocus += p;
             Name.ContextMenu = new ContextMenu();
             Name.ContextMenu.Items.Clear();
 
@@ -176,7 +180,33 @@ namespace WpfDiagramDesigner.Objects
             menuitem.Header = "Remove";
             menuitem.Click += (e, er) =>
             {
-                model.RemoveElement((ElementBuilder)node.NodeObject); model.Refresh();
+                List<string> lists = UMLReader.UmlReader.ListDependecies((ElementBuilder)node.NodeObject);
+                if (lists.Any())
+                {
+                    string errorConcat = "Biztosan törölni akarod?\nAz alábbi dependcenciákkal rendelkezik:\n";
+                    foreach (var item in lists)
+                    {
+                        errorConcat += item + "\n";
+                    }
+                    ConfirmDelete popup = new ConfirmDelete(errorConcat, PopupGlobalPosition.Position);
+                    var res = popup.ShowDialog();
+                    if (res.HasValue && res.Value)
+                    {
+                        Name.LostFocus -= p;
+                        model.RemoveElement((ElementBuilder)node.NodeObject);
+                        model.Refresh();
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    Name.LostFocus -= p;
+                    model.RemoveElement((ElementBuilder)node.NodeObject);
+                    model.Refresh();
+                }
             };
             Name.ContextMenu.Items.Add(menuitem);
             GenerateText();
@@ -196,10 +226,14 @@ namespace WpfDiagramDesigner.Objects
 
         }
         protected abstract void RefreshAttributes();
+        protected abstract void RefreshFunctions();
+        protected abstract void RefreshEnums();
     
         public void AnimateObject(AnimationValues a, Storyboard storyboard)
         {
             RefreshAttributes();
+            RefreshFunctions();
+            RefreshEnums();
             var nodeAnim = (NodeAnimationValues)a;
             DoubleAnimation left = new DoubleAnimation
             {

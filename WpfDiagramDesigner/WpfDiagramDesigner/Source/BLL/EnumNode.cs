@@ -74,5 +74,14 @@ namespace WpfDiagramDesigner.Objects
         protected override void RefreshAttributes()
         {
         }
+
+        protected override void RefreshEnums()
+        {
+            //TODO
+        }
+
+        protected override void RefreshFunctions()
+        {
+        }
     }
 }

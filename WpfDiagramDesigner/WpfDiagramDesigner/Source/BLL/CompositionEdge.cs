@@ -13,7 +13,7 @@ namespace WpfDiagramDesigner.Objects
 {
     class CompositionEdge : AssociationEdge
     {
-        public CompositionEdge(EdgeLayout edge) : base(edge)
+        public CompositionEdge(EdgeLayout edge, ViewModel.IRefreshable model) : base(edge, model)
         {
         }
         protected override void AnimateHead(Point e, Point d, Storyboard storyboard)

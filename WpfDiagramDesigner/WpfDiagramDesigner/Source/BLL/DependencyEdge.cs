@@ -12,7 +12,7 @@ namespace WpfDiagramDesigner.Objects
 {
     class DependencyEdge : Edge
     {
-        public DependencyEdge(EdgeLayout edge) : base(edge)
+        public DependencyEdge(EdgeLayout edge, ViewModel.IRefreshable model) : base(edge, model)
         {
         }
 

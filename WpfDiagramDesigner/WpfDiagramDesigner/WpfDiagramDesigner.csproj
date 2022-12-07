@@ -7,13 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="classobject.png" />
+    <None Remove="enumObject.png" />
     <None Remove="ic_folder_open_black_24dp.png" />
+    <None Remove="interfaceObject.png" />
     <None Remove="Resources\Images\aggregation.png" />
     <None Remove="Resources\Images\assoc.PNG" />
     <None Remove="Resources\Images\composition.PNG" />
     <None Remove="Resources\Images\dependency.PNG" />
     <None Remove="Resources\Images\inheritance.PNG" />
     <None Remove="Resources\Images\realization.PNG" />
+    <None Remove="twowayassoc.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,23 +35,44 @@
     <Resource Include="assoc.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="classobject.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="composition.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="dependency.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="enumObject.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="ic_folder_open_black_24dp.png" />
     <Resource Include="inheritance.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="interfaceObject.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="realization.PNG">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="twowayassoc.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Resources\Images\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Source\PRL\ViewModel\ConfirmDeleteViewModel.cs">
+      <Generator>MSBuild:Compile</Generator>
+    </Compile>
+    <Compile Update="Source\PRL\ViewModel\NewTypeSelectorPopupViewModel.cs">
+      <Generator>MSBuild:Compile</Generator>
+    </Compile>
   </ItemGroup>
 
 </Project>

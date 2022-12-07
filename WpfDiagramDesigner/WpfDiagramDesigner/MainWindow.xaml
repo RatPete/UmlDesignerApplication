@@ -7,8 +7,9 @@
         xmlns:model="namespace:MetaDslx.Languages.Uml.Model"
         xmlns:local="clr-namespace:WpfDiagramDesigner"
         xmlns:objects="clr-namespace:WpfDiagramDesigner.Objects"
+        xmlns:RelationShip="clr-namespace:WpfDiagramDesigner.Source.PRL.Helper"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" >
+        Title="Diagramszerkesztő alkalmazás" Height="450" Width="800" >
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -25,51 +26,145 @@
                     <RibbonButton x:Name="QATButton2" />
                 </RibbonQuickAccessToolBar>
             </Ribbon.QuickAccessToolBar>
-            <Ribbon.ApplicationMenu>
-                <RibbonApplicationMenu >
-                    <RibbonApplicationMenuItem Header="Hello _Ribbon"
-                                                      x:Name="MenuItem1"/>
+            <Ribbon.ApplicationMenu >
+                <RibbonApplicationMenu>
+                    <RibbonApplicationMenuItem Header="Új diagram"
+                                                      x:Name="New_Diagram"
+                                               Click="New_Diagram_Click"/>
+                    <RibbonApplicationMenuItem Header="Diagram betöltése"
+                                                      x:Name="Load_Diagram"
+                                               Click="Open_Click"/>
+
+                    <RibbonApplicationMenuItem Header="Diagram mentése"
+                                                      x:Name="Save_Diagram"
+                                               Click="Save_Click"/>
                 </RibbonApplicationMenu>
             </Ribbon.ApplicationMenu>
-            <RibbonTab x:Name="HomeTab" 
-                              Header="Home">
+            <RibbonTab x:Name="Relációk" 
+                              Header="Relációk">
                 <RibbonGroup x:Name="Group1" 
-                                    Header="Group1">
-                    <RibbonButton x:Name="New_Diagram" SmallImageSource="/ic_folder_open_black_24dp.png" Label="New Diagram" Click="New_Diagram_Click"></RibbonButton>
-                    <RibbonButton x:Name="Button1"
-                                         Label="Save Button" SmallImageSource="/ic_folder_open_black_24dp.png" Click="Save_Click"/>
-                    <RibbonButton x:Name="Button2"
-                                         Label="Open Button" SmallImageSource="/ic_folder_open_black_24dp.png" Click="Open_Click"/>
+                                    Header="Relációk">
+
                     <RibbonButton x:Name="Aggregation"
-                                         Label="Aggregation" SmallImageSource="/aggregation.png" Click="Aggregation_Click"/>
+                                         Label="Aggregation" LargeImageSource="/aggregation.png" Click="Aggregation_Click">
+                        <RibbonButton.Style>
+                            <Style TargetType="RibbonButton">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=(RelationShip:RelationshipCreator.CurrentClickType),Mode=TwoWay}" Value="{x:Static RelationShip:ClickType.AGGREGATION}">
+                                        <Setter Property="Background" Value="Yellow"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RibbonButton.Style>
+                    </RibbonButton>
                     <RibbonButton x:Name="Association"
-                                         Label="Associtation" SmallImageSource="/assoc.png" Click="Association_Click"/>
+                                         Label="Associtation" LargeImageSource="/twowayassoc.png" Click="Association_Click">
+                        <RibbonButton.Style>
+                            <Style TargetType="RibbonButton">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=(RelationShip:RelationshipCreator.CurrentClickType),Mode=TwoWay}" Value="{x:Static RelationShip:ClickType.ASSOCIATION}">
+                                        <Setter Property="Background" Value="Yellow"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RibbonButton.Style>
+                    </RibbonButton>
                     <RibbonButton x:Name="Composition"
-                                         Label="Composition" SmallImageSource="/composition.png" Click="Composition_Click"/>
+                                         Label="Composition" LargeImageSource="/composition.png" Click="Composition_Click">
+                        <RibbonButton.Style>
+                            <Style TargetType="RibbonButton">
+                                <Style.Triggers>
+                                    <DataTrigger  Binding="{Binding Path=(RelationShip:RelationshipCreator.CurrentClickType),Mode=TwoWay}" Value="{x:Static RelationShip:ClickType.COMPOSITION}">
+                                        <Setter Property="Background" Value="Yellow"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RibbonButton.Style>
+
+                    </RibbonButton>
                     <RibbonButton x:Name="Dependency"
-                                         Label="Dependency" SmallImageSource="/dependency.png" Click="Dependency_Click"/>
+                                         Label="Dependency" LargeImageSource="/dependency.png" Click="Dependency_Click">
+                        <RibbonButton.Style>
+                            <Style TargetType="RibbonButton">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=(RelationShip:RelationshipCreator.CurrentClickType),Mode=TwoWay}" Value="{x:Static RelationShip:ClickType.DEPENDENCY}">
+                                        <Setter Property="Background" Value="Yellow"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RibbonButton.Style>
+
+                    </RibbonButton>
                     <RibbonButton x:Name="Inheritance"
-                                         Label="Inheritance" SmallImageSource="/inheritance.png" Click="Inheritance_Click"/>
+                                         Label="Inheritance" LargeImageSource="/inheritance.png" Click="Inheritance_Click">
+                        <RibbonButton.Style>
+                            <Style TargetType="RibbonButton">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=(RelationShip:RelationshipCreator.CurrentClickType),Mode=TwoWay}" Value="{x:Static RelationShip:ClickType.INHERITANCE}">
+                                        <Setter Property="Background" Value="Yellow"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RibbonButton.Style>
+
+                    </RibbonButton>
                     <RibbonButton x:Name="Realization"
-                                         Label="Realization" SmallImageSource="/realization.png" Click="Realization_Click"/>
+                                         Label="Realization" LargeImageSource="/realization.png" Click="Realization_Click">
+                        <RibbonButton.Style>
+                            <Style TargetType="RibbonButton">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=(RelationShip:RelationshipCreator.CurrentClickType),Mode=TwoWay}" Value="{x:Static RelationShip:ClickType.REALIZATION}">
+                                        <Setter Property="Background" Value="Yellow"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RibbonButton.Style>
+
+                    </RibbonButton>
                     <RibbonButton x:Name="OneWayAssocitation"
-                                         Label="One way association" SmallImageSource="/assoc.png" Click="OneWayAssociation_Click"/>
+                                         Label="One way association" LargeImageSource="/assoc.png" Click="OneWayAssociation_Click">
+                        <RibbonButton.Style>
+                            <Style TargetType="RibbonButton">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=(RelationShip:RelationshipCreator.CurrentClickType),Mode=TwoWay}" Value="{x:Static RelationShip:ClickType.ONEWAYASSOCIATION}">
+                                        <Setter Property="Background" Value="Yellow"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RibbonButton.Style>
+
+                    </RibbonButton>
                     <RibbonButton x:Name="Normal"
-                                         Label="Normal" Click="Normal_Click"/>
+                                         Label="Normal" Click="Normal_Click">
+                        <RibbonButton.Style>
+                            <Style TargetType="RibbonButton">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding Path=(RelationShip:RelationshipCreator.CurrentClickType),Mode=TwoWay}" Value="{x:Static RelationShip:ClickType.NORMAL}">
+                                        <Setter Property="Background" Value="Yellow"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </RibbonButton.Style>
+
+                    </RibbonButton>
+
                 </RibbonGroup>
             </RibbonTab>
-            <RibbonTab x:Name="FormatTab" 
-                              Header="Format">
+            <RibbonTab x:Name="Objektumok" 
+                              Header="Objektumok">
                 <RibbonGroup x:Name="Group2" 
-                                    Header="Group2">
-                    <RibbonButton x:Name="Button8"
-                                         Label="Button1" SmallImageSource="/ic_folder_open_black_24dp.png" />
-                    <RibbonButton x:Name="Button9"
-                                         Label="Button2" SmallImageSource="/ic_folder_open_black_24dp.png"/>
-                    <RibbonButton x:Name="Button10"
-                                         Label="Button3" SmallImageSource="/ic_folder_open_black_24dp.png"/>
-                    <RibbonButton x:Name="Button11"
-                                         Label="Button4" SmallImageSource="/ic_folder_open_black_24dp.png"/>
+                                    Header="Objektumok">
+                    <RibbonButton x:Name="NewClass" LargeImageSource="/classObject.png"
+                                         Label="Class" Click="NewClass_Click"/>
+                    <RibbonButton x:Name="NewInterface"
+                                  LargeImageSource="/interfaceObject.png"
+                                         Label="Interface" Click="NewInterface_Click"/>
+                    <RibbonButton x:Name="NewEnumeration"
+                                  LargeImageSource="/enumObject.png"
+                                         Label="Enumeration" Click="NewEnum_Click"/>
+
+                    <RibbonButton x:Name="EditPrimitives"
+                                         Label="Primitív típus lista módosítása" Click="Edit_Primitive_Click"/>
                 </RibbonGroup>
             </RibbonTab>
         </Ribbon>

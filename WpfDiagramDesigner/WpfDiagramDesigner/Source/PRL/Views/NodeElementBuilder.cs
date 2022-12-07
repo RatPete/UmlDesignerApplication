@@ -7,6 +7,8 @@ using System.Text;
 using System.Windows.Controls;
 using System.Windows.Media;
 using WpfDiagramDesigner.Objects;
+using WpfDiagramDesigner.Source.PRL.Helper;
+using WpfDiagramDesigner.Source.PRL.Views;
 
 namespace WpfDiagramDesigner.Views
 {
@@ -29,6 +31,26 @@ namespace WpfDiagramDesigner.Views
             StyleTexbox(tb);
             tb.LostFocus += (e, er) =>
             {
+                try
+                {
+                    InlineParser.CanParseFunction(tb.Text);
+                }
+                catch (ObjectNotParsableException exception)
+                {
+                    //TODO show dialog for exception
+                    ErrorPopup popup = new ErrorPopup(exception.Message,tb.PointToScreen(new System.Windows.Point(0,0)));
+                    var result = popup.ShowDialog();
+                    if (result.HasValue && result.Value)
+                    {
+                        model.RefocusElement(tb);
+                    }
+                    else
+                    {
+                        tb.Text = UMLReader.UmlReader.CreateFunctionText(item);
+                    }
+
+                    return;
+                }
                 InlineParser.FunctionParse(tb.Text, item);
                 tb.Text=UMLReader.UmlReader.CreateFunctionText(item);
                 StyleTexbox(tb);
@@ -41,7 +63,6 @@ namespace WpfDiagramDesigner.Views
             menuitem.Click += (e, er) =>
             {
                 element.RemoveFunction(tb,item);
-                ((ClassBuilder)item.Owner).OwnedOperation.Remove(item);
                 model.Refresh();
             };
             tb.ContextMenu.Items.Add(menuitem);
@@ -49,7 +70,7 @@ namespace WpfDiagramDesigner.Views
             menuitem.Header = "Add";
             menuitem.Click += (e, er) =>
             {
-                ((ClassBuilder)item.Owner).OwnedAttribute.Add(UMLReader.UmlReader.UmlFactory.Property());
+                
                 element.AddFunction();
                 model.Refresh();
             };
@@ -65,6 +86,25 @@ namespace WpfDiagramDesigner.Views
             StyleTexbox(tb);
             tb.LostFocus += (e, er) =>
             {
+                try
+                {
+                    InlineParser.CanParseAttribute(tb.Text);
+                }
+                catch(ObjectNotParsableException exception)
+                {
+                    //TODO show dialog for exception
+                    ErrorPopup popup = new ErrorPopup(exception.Message, tb.PointToScreen(new System.Windows.Point(0, 0)));
+                    var result = popup.ShowDialog();
+                    if (result.HasValue && result.Value)
+                    {
+                        model.RefocusElement(tb);
+                    }
+                    else
+                    {
+                        tb.Text = UMLReader.UmlReader.CreateAttributeText(item);
+                    }
+                    return;
+                }
                 InlineParser.AttributeParse(tb.Text, item);
                 tb.Text=UMLReader.UmlReader.CreateAttributeText( item);
 
@@ -76,8 +116,7 @@ namespace WpfDiagramDesigner.Views
             menuitem.Header = "Remove";
             menuitem.Click += (e, er) =>
             {
-                ((ClassBuilder)item.Owner).OwnedAttribute.Remove(item);
-                tb.Text=UMLReader.UmlReader.CreateAttributeText( item);
+                //tb.Text=UMLReader.UmlReader.CreateAttributeText( item);
                 element.RemoveAttribute(tb,item);
                 model.Refresh();
             };
@@ -86,7 +125,6 @@ namespace WpfDiagramDesigner.Views
             menuitem.Header = "Add";
             menuitem.Click += (e, er) =>
             {
-                ((ClassBuilder)item.Owner).OwnedAttribute.Add(UMLReader.UmlReader.UmlFactory.Property());
                 element.AddAttribute();
                 //tb.Text= UMLReader.UmlReader.CreateAttributeText( item);
                 model.Refresh();
@@ -102,7 +140,38 @@ namespace WpfDiagramDesigner.Views
             tb.Text= CreateEnumText( enumerationLiteral);
             tb.LostFocus += (e, er) =>
             {
-                InlineParser.NameParser(tb.Text, enumerationLiteral);
+                try
+                {
+                    if (InlineParser.CanParseEnum(tb.Text))
+                    {
+                        enumerationLiteral.Name = tb.Text;
+
+                        tb.Text = enumerationLiteral.Name;
+                        StyleTexbox(tb);
+                        model.Refresh();
+                    }
+                    else
+                    {
+                        tb.Text = enumerationLiteral.Name;
+                    }
+                }
+                catch (ObjectNotParsableException exception)
+                {
+                    //TODO show dialog for exception
+                    ErrorPopup popup = new ErrorPopup(exception.Message, tb.PointToScreen(new System.Windows.Point(0, 0)));
+                    var result=popup.ShowDialog();
+                    if (result.HasValue && result.Value)
+                    {
+
+                        model.RefocusElement(tb);
+                    }
+                    else
+                    {
+                        tb.Text = CreateEnumText(enumerationLiteral);
+                    }
+                    return;
+                }
+                InlineParser.EnumParser(tb.Text, enumerationLiteral);
                 tb.Text=CreateEnumText( enumerationLiteral);
                 model.Refresh();
             };
@@ -112,7 +181,6 @@ namespace WpfDiagramDesigner.Views
             menuitem.Click += (e, er) =>
             {
                 element.RemoveLiteral(tb,enumerationLiteral);
-                ((EnumerationBuilder)(enumerationLiteral.Owner)).OwnedLiteral.Remove(enumerationLiteral);
                 model.Refresh();
             };
             tb.ContextMenu.Items.Add(menuitem);

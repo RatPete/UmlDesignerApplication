@@ -13,7 +13,7 @@ namespace WpfDiagramDesigner.Objects
 {
     class AggregationEdge : AssociationEdge
     {
-        public AggregationEdge(EdgeLayout edge) : base(edge)
+        public AggregationEdge(EdgeLayout edge, ViewModel.IRefreshable model) : base(edge, model)
         {
         }
         protected override void AnimateHead(Point e, Point d, Storyboard storyboard)

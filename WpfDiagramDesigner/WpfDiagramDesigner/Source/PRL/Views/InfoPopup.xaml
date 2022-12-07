@@ -1,0 +1,18 @@
+﻿<Window x:Class="WpfDiagramDesigner.Source.PRL.Views.InfoPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfDiagramDesigner.Source.PRL.Views"
+        mc:Ignorable="d" WindowStyle="None"
+        SizeToContent="WidthAndHeight"
+        Title="InfoPopup"  DataContext="{Binding ViewModel}" x:Name="InfoVIew" >
+
+    <StackPanel>
+        <TextBlock Text="{Binding ErrorDescription}" Width="260" MaxHeight="300" TextWrapping="Wrap" />
+        <DockPanel Width="260">
+            <Button DockPanel.Dock="Left" Width="100" Content="Ok" Click="Button_Click" Margin="80,0,80,0"/>
+        </DockPanel>
+    </StackPanel>
+
+</Window>

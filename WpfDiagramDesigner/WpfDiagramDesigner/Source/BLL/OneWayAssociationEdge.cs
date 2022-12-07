@@ -13,7 +13,7 @@ namespace WpfDiagramDesigner.Objects
 {
     class OneWayAssociationEdge : AssociationEdge
     {
-        public OneWayAssociationEdge(EdgeLayout edge) : base(edge)
+        public OneWayAssociationEdge(EdgeLayout edge, ViewModel.IRefreshable model) : base(edge, model)
         {
         }
         protected override void AnimateHead(Point e, Point d, Storyboard storyboard)

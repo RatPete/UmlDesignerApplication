@@ -1,0 +1,20 @@
+﻿<Window x:Class="WpfDiagramDesigner.Source.PRL.Views.ErrorPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfDiagramDesigner.Source.PRL.Views"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        SizeToContent="WidthAndHeight"
+        Title="ErrorPopup"  DataContext="{Binding ViewModel}" x:Name="ErrorView" >
+    
+        <StackPanel>
+            <TextBlock Text="{Binding ErrorDescription}" Width="260" TextWrapping="Wrap" />
+            <DockPanel Width="260">
+                <Button DockPanel.Dock="Left" Width="100" Content="Módosítás elvetése" Click="RejectButton_Click" Margin="20,0,20,0"/>
+                <Button DockPanel.Dock="Right" Width="100" Margin="0,0,20,0" Content="Hiba kijavítása" Click="FixButton_Click" />
+            </DockPanel>
+        </StackPanel>
+    
+</Window>
